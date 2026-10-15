@@ -14,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
@@ -28,11 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _submitForm() {
     FocusScope.of(context).unfocus();
-
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
     Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
   }
 
@@ -59,7 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 32, 24, 28),
                     child: Form(
-                      key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [

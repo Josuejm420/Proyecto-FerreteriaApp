@@ -5,25 +5,13 @@ import 'package:app_ferreteria/main.dart';
 
 void main() {
   testWidgets(
-    'login validates fields and allows toggling password visibility',
+    'login button opens home without requiring credentials',
     (tester) async {
       await tester.pumpWidget(const FerreteriaApp());
 
       expect(find.text('Bienvenido'), findsOneWidget);
       expect(find.text('Correo electrónico'), findsOneWidget);
       expect(find.text('Contraseña'), findsOneWidget);
-
-      await tester.tap(find.text('Iniciar sesión'));
-      await tester.pump();
-
-      expect(find.text('Ingresa tu correo electrónico'), findsOneWidget);
-      expect(find.text('Ingresa tu contraseña'), findsOneWidget);
-
-      await tester.enterText(
-        find.byType(TextFormField).at(0),
-        'persona@ejemplo.com',
-      );
-      await tester.enterText(find.byType(TextFormField).at(1), 'clave123');
 
       final passwordTextField = find.descendant(
         of: find.byType(TextFormField).at(1),
@@ -37,14 +25,11 @@ void main() {
       expect(tester.widget<TextField>(passwordTextField).obscureText, isFalse);
 
       await tester.tap(find.text('Iniciar sesión'));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(
-        find.text(
-          'Formulario válido. Falta conectar el servicio de autenticación.',
-        ),
-        findsOneWidget,
-      );
+      expect(find.text('Don Toño - Admin'), findsOneWidget);
+      expect(find.text('Métricas del sistema'), findsOneWidget);
+      expect(find.text('Productos en inventario'), findsOneWidget);
     },
   );
 }

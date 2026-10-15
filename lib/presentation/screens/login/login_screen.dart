@@ -32,15 +32,13 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Formulario válido. Falta conectar el servicio de autenticación.',
-          ),
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Formulario válido. Falta conectar el servicio de autenticación.',
         ),
-      );
+      ),
+    );
   }
 
   @override

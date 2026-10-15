@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
 import 'widgets/home_kpi_card.dart';
@@ -20,21 +20,21 @@ class _HomeScreenState extends State<HomeScreen> {
     _HomeSection(
       title: 'Resumen de indicadores',
       subtitle:
-          'Analiza el comportamiento de clientes, productos, descuentos y vendedores para decidir qué acciones tomar.',
+          'Analiza el comportamiento de clientes, productos, descuentos y vendedores para decidir qu\u00E9 acciones tomar.',
       firstKpiIndex: 0,
       lastKpiIndex: 7,
     ),
     _HomeSection(
       title: 'Indicadores de clientes',
       subtitle:
-          'Identifica cambios de compra, clientes en riesgo y oportunidades de recuperación.',
+          'Identifica cambios de compra, clientes en riesgo y oportunidades de recuperaci\u00F3n.',
       firstKpiIndex: 0,
       lastKpiIndex: 4,
     ),
     _HomeSection(
       title: 'Indicadores de productos',
       subtitle:
-          'Revisa la rentabilidad y el desempeño de cada producto para optimizar el catálogo.',
+          'Revisa la rentabilidad y el desempe\u00F1o de cada producto para optimizar el cat\u00E1logo.',
       firstKpiIndex: 4,
       lastKpiIndex: 6,
     ),
@@ -49,79 +49,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const _allKpis = [
     _KpiData(
-      number: 1,
-      title: 'Variación de ventas por cliente, descompuesta en causas',
-      question: '¿Por qué bajó lo que compra este cliente?',
-      formula:
-          'Ventas = número de facturas × unidades por factura × precio promedio por unidad.',
-      diagnosis:
-          'Compara cada factor con el período anterior para identificar cuál explica la caída.',
-      decision:
-          'Si cayó la frecuencia, reactiva al cliente; si bajaron las unidades por factura, ofrece venta cruzada; si cayó el precio, revisa los descuentos.',
+      icon: Icons.trending_up,
+      title: 'Variaci\u00F3n de ventas por cliente, descompuesta en causas',
     ),
     _KpiData(
-      number: 2,
+      icon: Icons.schedule,
       title: 'Recencia y clientes en riesgo de fuga',
-      question: '¿Qué clientes están por dejar de comprar?',
-      formula:
-          'Días desde la última compra comparados con el intervalo habitual de compra de ese cliente.',
-      diagnosis:
-          'Detecta a los clientes cuya demora de compra supera su intervalo habitual.',
-      decision: 'Contacta al cliente antes de perderlo.',
     ),
     _KpiData(
-      number: 3,
-      title: 'Segmentación RFM: recencia, frecuencia y valor',
-      question: '¿Qué clientes merecen más atención o descuentos?',
-      formula:
-          'Clasificación de clientes según recencia, frecuencia de compra y valor monetario.',
-      diagnosis:
-          'Agrupa a los clientes en campeones, en riesgo y de bajo valor.',
-      decision:
-          'Define estrategias distintas de atención, retención y descuentos para cada segmento.',
+      icon: Icons.groups_outlined,
+      title: 'Segmentaci\u00F3n RFM: recencia, frecuencia y valor',
     ),
     _KpiData(
-      number: 4,
-      title: 'Categorías abandonadas por cliente',
-      question: '¿Qué categoría dejó de comprar este cliente?',
-      formula:
-          'Categorías compradas en el período anterior que ya no aparecen en el actual, junto con su impacto en ventas.',
-      diagnosis:
-          'Identifica las categorías ausentes y cuánto representaban en las ventas del cliente.',
-      decision:
-          'Revisa el precio o la disponibilidad de la categoría, u ofrécela activamente.',
+      icon: Icons.category_outlined,
+      title: 'Categor\u00EDas abandonadas por cliente',
     ),
     _KpiData(
-      number: 5,
-      title: 'Margen bruto y variación del margen descompuesta',
-      question: '¿Por qué cambió mi rentabilidad?',
-      formula: 'Margen = (precio de venta − descuento − costo) × cantidad.',
-      diagnosis:
-          'Separa la variación en efecto precio, efecto costo, efecto descuento y efecto mix de productos.',
-      decision:
-          'Ajusta precios, cambia el mix de productos o renegocia costos.',
+      icon: Icons.account_balance_wallet_outlined,
+      title: 'Margen bruto y variaci\u00F3n del margen descompuesta',
     ),
     _KpiData(
-      number: 6,
+      icon: Icons.grid_view,
       title: 'Matriz ABC de ventas frente a margen',
-      question: '¿Qué productos venden mucho, pero ganan poco?',
-      formula:
-          'Clasifica productos A, B y C por ventas y cruza esa clasificación con su margen.',
-      diagnosis:
-          'Distingue los productos con alto o bajo aporte en ventas y rentabilidad.',
-      decision:
-          'Promociona los de alto margen, revisa el precio de los de bajo margen y considera descontinuar los de baja venta y bajo margen.',
     ),
     _KpiData(
-      number: 7,
+      icon: Icons.sell_outlined,
       title: 'Efectividad del descuento',
-      question: '¿Mis descuentos generan más venta o solo regalan margen?',
-      formula:
-          'Compara ticket, unidades y margen de facturas con descuento contra las que no lo tienen, por vendedor, cliente y producto.',
-      diagnosis:
-          'Evalúa si el aumento de ticket o unidades compensa el margen cedido en los descuentos.',
-      decision:
-          'Limita o redirige descuentos y capacita a vendedores que descuentan de más.',
     ),
   ];
 
@@ -133,10 +86,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final section = _sections[_selectedSection];
+    final kpis = _allKpis
+        .skip(section.firstKpiIndex)
+        .take(section.lastKpiIndex - section.firstKpiIndex);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menú principal'),
+        title: const Text('Men\u00FA principal'),
         backgroundColor: AppColors.azul,
         foregroundColor: Colors.white,
       ),
@@ -156,18 +112,8 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 8),
           Text(section.subtitle, style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 20),
-          for (final kpi
-              in _allKpis
-                  .skip(section.firstKpiIndex)
-                  .take(section.lastKpiIndex - section.firstKpiIndex)) ...[
-            HomeKpiCard(
-              number: kpi.number,
-              title: kpi.title,
-              question: kpi.question,
-              formula: kpi.formula,
-              diagnosis: kpi.diagnosis,
-              decision: kpi.decision,
-            ),
+          for (final kpi in kpis) ...[
+            HomeKpiCard(icon: kpi.icon, title: kpi.title),
             const SizedBox(height: 14),
           ],
         ],
@@ -219,19 +165,8 @@ class _HomeSection {
 }
 
 class _KpiData {
-  const _KpiData({
-    required this.number,
-    required this.title,
-    required this.question,
-    required this.formula,
-    required this.diagnosis,
-    required this.decision,
-  });
+  const _KpiData({required this.icon, required this.title});
 
-  final int number;
+  final IconData icon;
   final String title;
-  final String question;
-  final String formula;
-  final String diagnosis;
-  final String decision;
 }

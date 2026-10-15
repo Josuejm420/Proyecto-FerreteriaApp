@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app_ferreteria/main.dart';
+import 'package:app_ferreteria/presentation/screens/Home/home_screen.dart';
 import 'package:app_ferreteria/presentation/screens/login/login_screen.dart';
-import 'package:app_ferreteria/presentation/screens/home/home_screen.dart';
 import 'package:app_ferreteria/presentation/screens/users/user_profile_screen.dart';
 
 void main() {
@@ -51,7 +51,9 @@ void main() {
     },
   );
 
-  testWidgets('profile route shows user details', (tester) async {
+  testWidgets('profile route displays name, address, email, and role', (
+    tester,
+  ) async {
     await tester.pumpWidget(const FerreteriaApp());
 
     await Navigator.of(
@@ -67,7 +69,7 @@ void main() {
     expect(find.text('Usuario'), findsOneWidget);
   });
 
-  testWidgets('home named route displays KPI dashboard and navigation', (
+  testWidgets('home route displays KPI dashboard and navigation', (
     tester,
   ) async {
     await tester.pumpWidget(const FerreteriaApp());

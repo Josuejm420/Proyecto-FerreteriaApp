@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
 import 'widgets/home_kpi_card.dart';
-import 'widgets/home_menu_drawer.dart';     
+import 'widgets/home_menu_drawer.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -19,21 +20,21 @@ class _HomeScreenState extends State<HomeScreen> {
     _HomeSection(
       title: 'Resumen de indicadores',
       subtitle:
-          'Analiza el comportamiento de clientes, productos, descuentos y vendedores para decidir qué acciones tomar.',
+          'Analiza el comportamiento de clientes, productos, descuentos y vendedores para decidir qu\u00E9 acciones tomar.',
       firstKpiIndex: 0,
       lastKpiIndex: 7,
     ),
     _HomeSection(
       title: 'Indicadores de clientes',
       subtitle:
-          'Identifica cambios de compra, clientes en riesgo y oportunidades de recuperación.',
+          'Identifica cambios de compra, clientes en riesgo y oportunidades de recuperaci\u00F3n.',
       firstKpiIndex: 0,
       lastKpiIndex: 4,
     ),
     _HomeSection(
       title: 'Indicadores de productos',
       subtitle:
-          'Revisa la rentabilidad y el desempeño de cada producto para optimizar el catálogo.',
+          'Revisa la rentabilidad y el desempe\u00F1o de cada producto para optimizar el cat\u00E1logo.',
       firstKpiIndex: 4,
       lastKpiIndex: 6,
     ),
@@ -48,101 +49,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const _allKpis = [
     _KpiData(
-<<<<<<< HEAD
-      number: 1,
-      title: 'Variación de ventas por cliente, descompuesta en causas',
-      question: '¿Por qué bajó lo que compra este cliente?',
-      formula:
-          'Ventas = número de facturas × unidades por factura × precio promedio por unidad.',
-      diagnosis:
-          'Compara cada factor con el período anterior para identificar cuál explica la caída.',
-      decision:
-          'Si cayó la frecuencia, reactiva al cliente; si bajaron las unidades por factura, ofrece venta cruzada; si cayó el precio, revisa los descuentos.',
-    ),
-    _KpiData(
-      number: 2,
-      title: 'Recencia y clientes en riesgo de fuga',
-      question: '¿Qué clientes están por dejar de comprar?',
-      formula:
-          'Días desde la última compra comparados con el intervalo habitual de compra de ese cliente.',
-      diagnosis:
-          'Detecta a los clientes cuya demora de compra supera su intervalo habitual.',
-      decision: 'Contacta al cliente antes de perderlo.',
-    ),
-    _KpiData(
-      number: 3,
-      title: 'Segmentación RFM: recencia, frecuencia y valor',
-      question: '¿Qué clientes merecen más atención o descuentos?',
-      formula:
-          'Clasificación de clientes según recencia, frecuencia de compra y valor monetario.',
-      diagnosis:
-          'Agrupa a los clientes en campeones, en riesgo y de bajo valor.',
-      decision:
-          'Define estrategias distintas de atención, retención y descuentos para cada segmento.',
-    ),
-    _KpiData(
-      number: 4,
-      title: 'Categorías abandonadas por cliente',
-      question: '¿Qué categoría dejó de comprar este cliente?',
-      formula:
-          'Categorías compradas en el período anterior que ya no aparecen en el actual, junto con su impacto en ventas.',
-      diagnosis:
-          'Identifica las categorías ausentes y cuánto representaban en las ventas del cliente.',
-      decision:
-          'Revisa el precio o la disponibilidad de la categoría, u ofrécela activamente.',
-    ),
-    _KpiData(
-      number: 5,
-      title: 'Margen bruto y variación del margen descompuesta',
-      question: '¿Por qué cambió mi rentabilidad?',
-      formula: 'Margen = (precio de venta − descuento − costo) × cantidad.',
-      diagnosis:
-          'Separa la variación en efecto precio, efecto costo, efecto descuento y efecto mix de productos.',
-      decision:
-          'Ajusta precios, cambia el mix de productos o renegocia costos.',
-    ),
-    _KpiData(
-      number: 6,
-      title: 'Matriz ABC de ventas frente a margen',
-      question: '¿Qué productos venden mucho, pero ganan poco?',
-      formula:
-          'Clasifica productos A, B y C por ventas y cruza esa clasificación con su margen.',
-      diagnosis:
-          'Distingue los productos con alto o bajo aporte en ventas y rentabilidad.',
-      decision:
-          'Promociona los de alto margen, revisa el precio de los de bajo margen y considera descontinuar los de baja venta y bajo margen.',
-    ),
-    _KpiData(
-      number: 7,
-      title: 'Efectividad del descuento',
-      question: '¿Mis descuentos generan más venta o solo regalan margen?',
-      formula:
-          'Compara ticket, unidades y margen de facturas con descuento contra las que no lo tienen, por vendedor, cliente y producto.',
-      diagnosis:
-          'Evalúa si el aumento de ticket o unidades compensa el margen cedido en los descuentos.',
-      decision:
-          'Limita o redirige descuentos y capacita a vendedores que descuentan de más.',
-    ),
-=======
       icon: Icons.trending_up,
-      title: 'Variación de ventas por cliente, descompuesta en causas',
+      title: 'Variaci\u00F3n de ventas por cliente, descompuesta en causas',
     ),
-    _KpiData(icon: Icons.schedule, title: 'Recencia y clientes en riesgo de fuga'),
+    _KpiData(
+      icon: Icons.schedule,
+      title: 'Recencia y clientes en riesgo de fuga',
+    ),
     _KpiData(
       icon: Icons.groups_outlined,
-      title: 'Segmentación RFM: recencia, frecuencia y valor',
+      title: 'Segmentaci\u00F3n RFM: recencia, frecuencia y valor',
     ),
-    _KpiData(icon: Icons.category_outlined, title: 'Categorías abandonadas por cliente'),
+    _KpiData(
+      icon: Icons.category_outlined,
+      title: 'Categor\u00EDas abandonadas por cliente',
+    ),
     _KpiData(
       icon: Icons.account_balance_wallet_outlined,
-      title: 'Margen bruto y variación del margen descompuesta',
+      title: 'Margen bruto y variaci\u00F3n del margen descompuesta',
     ),
     _KpiData(
       icon: Icons.grid_view,
       title: 'Matriz ABC de ventas frente a margen',
     ),
-    _KpiData(icon: Icons.sell_outlined, title: 'Efectividad del descuento'),
->>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
+    _KpiData(
+      icon: Icons.sell_outlined,
+      title: 'Efectividad del descuento',
+    ),
   ];
 
   void _selectSection(int index) {
@@ -159,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menú principal'),
+        title: const Text('Men\u00FA principal'),
         backgroundColor: AppColors.azul,
         foregroundColor: Colors.white,
       ),
@@ -180,19 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(section.subtitle, style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 20),
           for (final kpi in kpis) ...[
-            HomeKpiCard(
-<<<<<<< HEAD
-              number: kpi.number,
-              title: kpi.title,
-              question: kpi.question,
-              formula: kpi.formula,
-              diagnosis: kpi.diagnosis,
-              decision: kpi.decision,
-=======
-              icon: kpi.icon,
-              title: kpi.title,
->>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
-            ),
+            HomeKpiCard(icon: kpi.icon, title: kpi.title),
             const SizedBox(height: 14),
           ],
         ],
@@ -244,26 +165,8 @@ class _HomeSection {
 }
 
 class _KpiData {
-<<<<<<< HEAD
-  const _KpiData({
-    required this.number,
-    required this.title,
-    required this.question,
-    required this.formula,
-    required this.diagnosis,
-    required this.decision,
-  });
-
-  final int number;
-  final String title;
-  final String question;
-  final String formula;
-  final String diagnosis;
-  final String decision;
-=======
   const _KpiData({required this.icon, required this.title});
 
   final IconData icon;
   final String title;
->>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
 }

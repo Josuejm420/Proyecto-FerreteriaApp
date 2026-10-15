@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
-import '../Home/home_screen.dart';
 import 'widgets/login_email_field.dart';
 import 'widgets/login_password_field.dart';
 
@@ -33,7 +32,13 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Formulario válido. Falta conectar el servicio de autenticación.',
+        ),
+      ),
+    );
   }
 
   @override

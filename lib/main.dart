@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'core/constants/app_colors.dart';
-import 'presentation/screens/home/home_screen.dart';
-import 'presentation/screens/login/login_screen.dart';
-<<<<<<< HEAD
-import 'presentation/screens/users/user_profile_screen.dart';
-=======
 import 'presentation/screens/Home/home_screen.dart';
->>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
+import 'presentation/screens/login/login_screen.dart';
+
+import 'presentation/screens/users/user_profile_screen.dart';
 
 void main() {
   runApp(const FerreteriaApp());
@@ -35,10 +32,9 @@ class FerreteriaApp extends StatelessWidget {
         '/': (context) => const LoginScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
-<<<<<<< HEAD
+
         UserProfileScreen.routeName: (context) => const UserProfileScreen(),
-=======
->>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
+
       },
     );
   }

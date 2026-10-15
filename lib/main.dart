@@ -32,7 +32,6 @@ class FerreteriaApp extends StatelessWidget {
         '/': (context) => const LoginScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
-
         UserProfileScreen.routeName: (context) => const UserProfileScreen(),
 
       },

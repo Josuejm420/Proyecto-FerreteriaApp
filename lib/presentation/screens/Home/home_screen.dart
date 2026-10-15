@@ -48,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const _allKpis = [
     _KpiData(
+<<<<<<< HEAD
       number: 1,
       title: 'Variación de ventas por cliente, descompuesta en causas',
       question: '¿Por qué bajó lo que compra este cliente?',
@@ -122,6 +123,26 @@ class _HomeScreenState extends State<HomeScreen> {
       decision:
           'Limita o redirige descuentos y capacita a vendedores que descuentan de más.',
     ),
+=======
+      icon: Icons.trending_up,
+      title: 'Variación de ventas por cliente, descompuesta en causas',
+    ),
+    _KpiData(icon: Icons.schedule, title: 'Recencia y clientes en riesgo de fuga'),
+    _KpiData(
+      icon: Icons.groups_outlined,
+      title: 'Segmentación RFM: recencia, frecuencia y valor',
+    ),
+    _KpiData(icon: Icons.category_outlined, title: 'Categorías abandonadas por cliente'),
+    _KpiData(
+      icon: Icons.account_balance_wallet_outlined,
+      title: 'Margen bruto y variación del margen descompuesta',
+    ),
+    _KpiData(
+      icon: Icons.grid_view,
+      title: 'Matriz ABC de ventas frente a margen',
+    ),
+    _KpiData(icon: Icons.sell_outlined, title: 'Efectividad del descuento'),
+>>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
   ];
 
   void _selectSection(int index) {
@@ -160,12 +181,17 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 20),
           for (final kpi in kpis) ...[
             HomeKpiCard(
+<<<<<<< HEAD
               number: kpi.number,
               title: kpi.title,
               question: kpi.question,
               formula: kpi.formula,
               diagnosis: kpi.diagnosis,
               decision: kpi.decision,
+=======
+              icon: kpi.icon,
+              title: kpi.title,
+>>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
             ),
             const SizedBox(height: 14),
           ],
@@ -218,6 +244,7 @@ class _HomeSection {
 }
 
 class _KpiData {
+<<<<<<< HEAD
   const _KpiData({
     required this.number,
     required this.title,
@@ -233,4 +260,10 @@ class _KpiData {
   final String formula;
   final String diagnosis;
   final String decision;
+=======
+  const _KpiData({required this.icon, required this.title});
+
+  final IconData icon;
+  final String title;
+>>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
 }

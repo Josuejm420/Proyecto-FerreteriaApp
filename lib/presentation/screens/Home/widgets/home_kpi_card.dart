@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'package:flutter/material.dart';
 
 class HomeKpiCard extends StatelessWidget {
@@ -17,6 +18,19 @@ class HomeKpiCard extends StatelessWidget {
   final String formula;
   final String diagnosis;
   final String decision;
+=======
+﻿import 'package:flutter/material.dart';
+
+class HomeKpiCard extends StatelessWidget {
+  const HomeKpiCard({
+    required this.icon,
+    required this.title,
+    super.key,
+  });
+
+  final IconData icon;
+  final String title;
+>>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +47,7 @@ class HomeKpiCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+<<<<<<< HEAD
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
@@ -47,6 +62,16 @@ class HomeKpiCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
+=======
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 30,
+                  color: colors.primary,
+                ),
+                const SizedBox(width: 14),
+>>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
                 Expanded(
                   child: Text(
                     title,
@@ -57,6 +82,7 @@ class HomeKpiCard extends StatelessWidget {
                 ),
               ],
             ),
+<<<<<<< HEAD
             const SizedBox(height: 16),
             _KpiDetail(label: 'Pregunta', value: question),
             const SizedBox(height: 10),
@@ -65,12 +91,15 @@ class HomeKpiCard extends StatelessWidget {
             _KpiDetail(label: 'Diagnóstico', value: diagnosis),
             const SizedBox(height: 10),
             _KpiDetail(label: 'Decisión', value: decision),
+=======
+>>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)
           ],
         ),
       ),
     );
   }
 }
+<<<<<<< HEAD
 
 class _KpiDetail extends StatelessWidget {
   const _KpiDetail({required this.label, required this.value});
@@ -96,3 +125,5 @@ class _KpiDetail extends StatelessWidget {
     );
   }
 }
+=======
+>>>>>>> 1655f88 (Actualiza login e implementa pantalla Home)

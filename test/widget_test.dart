@@ -1,30 +1,50 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app_ferreteria/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets(
+    'login validates fields and allows toggling password visibility',
+    (tester) async {
+      await tester.pumpWidget(const FerreteriaApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      expect(find.text('Bienvenido'), findsOneWidget);
+      expect(find.text('Correo electrónico'), findsOneWidget);
+      expect(find.text('Contraseña'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      await tester.tap(find.text('Iniciar sesión'));
+      await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+      expect(find.text('Ingresa tu correo electrónico'), findsOneWidget);
+      expect(find.text('Ingresa tu contraseña'), findsOneWidget);
+
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'persona@ejemplo.com',
+      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'clave123');
+
+      final passwordTextField = find.descendant(
+        of: find.byType(TextFormField).at(1),
+        matching: find.byType(TextField),
+      );
+      expect(tester.widget<TextField>(passwordTextField).obscureText, isTrue);
+
+      await tester.tap(find.byTooltip('Mostrar contraseña'));
+      await tester.pump();
+
+      expect(tester.widget<TextField>(passwordTextField).obscureText, isFalse);
+
+      await tester.tap(find.text('Iniciar sesión'));
+      await tester.pump();
+
+      expect(
+        find.text(
+          'Formulario válido. Falta conectar el servicio de autenticación.',
+        ),
+        findsOneWidget,
+      );
+    },
+  );
 }

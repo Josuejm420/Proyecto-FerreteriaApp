@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'core/constants/app_colors.dart';
 import 'presentation/screens/login/login_screen.dart';
 
+
 void main() {
   runApp(const FerreteriaApp());
 }
@@ -28,6 +29,7 @@ class FerreteriaApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
+      
       },
     );
   }

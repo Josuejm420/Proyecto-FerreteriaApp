@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:app_ferreteria/core/constants/app_colors.dart';
-import 'package:app_ferreteria/presentation/screens/home/widgets/home_kpi_card.dart';
-import 'package:app_ferreteria/presentation/screens/home/widgets/home_menu_drawer.dart';
-
+import '../../../core/constants/app_colors.dart';
+import 'widgets/home_kpi_card.dart';
+import 'widgets/home_menu_drawer.dart';     
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -133,6 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final section = _sections[_selectedSection];
+    final kpis = _allKpis
+        .skip(section.firstKpiIndex)
+        .take(section.lastKpiIndex - section.firstKpiIndex);
 
     return Scaffold(
       appBar: AppBar(
@@ -156,10 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 8),
           Text(section.subtitle, style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 20),
-          for (final kpi
-              in _allKpis
-                  .skip(section.firstKpiIndex)
-                  .take(section.lastKpiIndex - section.firstKpiIndex)) ...[
+          for (final kpi in kpis) ...[
             HomeKpiCard(
               number: kpi.number,
               title: kpi.title,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_colors.dart';
-import 'widgets/home_kpi_card.dart';
-import 'widgets/home_menu_drawer.dart';
+import 'package:app_ferreteria/core/constants/app_colors.dart';
+import 'package:app_ferreteria/presentation/screens/home/widgets/home_kpi_card.dart';
+import 'package:app_ferreteria/presentation/screens/home/widgets/home_menu_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app_ferreteria/main.dart';
 import 'package:app_ferreteria/presentation/screens/login/login_screen.dart';
+import 'package:app_ferreteria/presentation/screens/users/user_profile_screen.dart';
 
 void main() {
   testWidgets(
@@ -49,17 +50,19 @@ void main() {
     },
   );
 
-  testWidgets('edit profile route shows the profile form', (tester) async {
+  testWidgets('profile route shows user details', (tester) async {
     await tester.pumpWidget(const FerreteriaApp());
 
     await Navigator.of(
       tester.element(find.byType(LoginScreen)),
-    ).pushNamed('/editar-perfil');
+    ).pushNamed(UserProfileScreen.routeName);
     await tester.pumpAndSettle();
 
-    expect(find.text('Editar perfil'), findsOneWidget);
-    expect(find.text('Nombre completo'), findsOneWidget);
+    expect(find.text('Perfil de usuario'), findsOneWidget);
+    expect(find.text('Nombre'), findsOneWidget);
+    expect(find.text('Dirección'), findsOneWidget);
     expect(find.text('Correo electrónico'), findsOneWidget);
-    expect(find.text('Guardar cambios'), findsOneWidget);
+    expect(find.text('Rol'), findsOneWidget);
+    expect(find.text('Usuario'), findsOneWidget);
   });
 }

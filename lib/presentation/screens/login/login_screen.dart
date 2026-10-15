@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Positioned.fill(
-            child: ColoredBox(color: Colors.black.withValues(alpha: 0.38)),
+            child: ColoredBox(color: Colors.black.withValues(alpha: 0.18)),
           ),
           SafeArea(
             child: Center(

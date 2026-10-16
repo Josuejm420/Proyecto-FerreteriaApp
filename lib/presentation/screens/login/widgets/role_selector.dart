@@ -42,8 +42,9 @@ class RoleSelector extends StatelessWidget {
                     role.label,
                     style: TextStyle(
                       color: Colors.white,
-                      fontWeight:
-                          role == selected ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: role == selected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                   ),
                 ),

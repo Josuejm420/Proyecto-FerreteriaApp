@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_routes.dart';
 import '../../../data/models/user_role.dart';
 import '../../../services/auth_service.dart';
 import '../../widgets/primary_button.dart';
@@ -14,13 +14,14 @@ import 'widgets/role_selector.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  static const routeName = AppRoutes.login;
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  // Datos de prueba precargados (quítalos cuando conectes la base de datos).
   final _emailController = TextEditingController(text: 'antonio@dontono.com');
   final _passwordController = TextEditingController(text: '12345678');
   final _passwordFocus = FocusNode();
@@ -38,7 +39,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  // --- Eventos ---
   void _togglePasswordVisibility() {
     setState(() => _obscurePassword = !_obscurePassword);
   }
@@ -49,12 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _onLogin() async {
     FocusScope.of(context).unfocus();
-
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
-
-    final ok = await _authService.login(
+    final authenticated = await _authService.login(
       _emailController.text,
       _passwordController.text,
     );
@@ -62,11 +60,11 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    if (ok) {
+    if (authenticated) {
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.home,
-        arguments: _selectedRole, // el menú se adapta al rol
+        arguments: _selectedRole,
       );
     } else {
       _showMessage('Correo o contraseña incorrectos');
@@ -81,16 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text(text),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Formulario válido. Falta conectar el servicio de autenticación.',
         ),
-      ),
-    );
+      );
   }
 
-  // --- UI ---
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -128,19 +120,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.all(24),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 420),
-          Positioned.fill(
-            child: ColoredBox(color: Colors.black.withValues(alpha: 0.18)),
-          ),
-          SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 440),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 32, 24, 28),
-                    child: Form(
-                      key: _formKey,
                       child: Column(
                         children: [
                           const LoginHeader(),
@@ -198,6 +177,9 @@ class _LoginScreenState extends State<LoginScreen> {
               validator: Validators.password,
               onFieldSubmitted: (_) => _onLogin(),
               suffixIcon: IconButton(
+                tooltip: _obscurePassword
+                    ? 'Mostrar contraseña'
+                    : 'Ocultar contraseña',
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
                   color: DarkColors.textoSuave,
@@ -211,10 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(color: DarkColors.textoSuave, fontSize: 14),
             ),
             const SizedBox(height: 8),
-            RoleSelector(
-              selected: _selectedRole,
-              onChanged: _onRoleChanged,
-            ),
+            RoleSelector(selected: _selectedRole, onChanged: _onRoleChanged),
             const SizedBox(height: 16),
             PrimaryButton(
               text: 'Iniciar sesión',

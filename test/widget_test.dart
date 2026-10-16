@@ -7,6 +7,39 @@ import 'package:app_ferreteria/presentation/screens/login/login_screen.dart';
 import 'package:app_ferreteria/presentation/screens/users/user_profile_screen.dart';
 
 void main() {
+  testWidgets('login button opens home without requiring credentials', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const FerreteriaApp());
+
+    expect(find.text('Ferretería Don Toño'), findsOneWidget);
+    expect(find.text('Correo electrónico'), findsOneWidget);
+    expect(find.text('Contraseña'), findsOneWidget);
+
+    final passwordTextField = find.descendant(
+      of: find.byType(TextFormField).at(1),
+      matching: find.byType(TextField),
+    );
+    expect(tester.widget<TextField>(passwordTextField).obscureText, isTrue);
+
+    await tester.tap(find.byIcon(Icons.visibility_off));
+    await tester.pump();
+
+    expect(tester.widget<TextField>(passwordTextField).obscureText, isFalse);
+
+    await tester.ensureVisible(find.text('Iniciar sesión'));
+    await tester.tap(find.text('Iniciar sesión'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Don Toño - Administrador'), findsOneWidget);
+    expect(find.text('Hola, Don Antonio Ruiz'), findsOneWidget);
+    expect(find.text('Métricas del sistema'), findsOneWidget);
+    expect(find.text('Productos en inventario'), findsOneWidget);
   testWidgets(
     'login validates fields and allows toggling password visibility',
     (tester) async {

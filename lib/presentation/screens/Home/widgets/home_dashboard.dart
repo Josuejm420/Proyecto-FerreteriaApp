@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../data/models/user_role.dart';
 import '../home_module.dart';
 import 'home_header.dart';
 import 'module_card.dart';
@@ -49,10 +50,15 @@ class HomeDashboard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: StatCard(label: 'Ventas de hoy', value: 'C\$ 1,495.00'),
+                  child: StatCard(
+                    label: 'Ventas de hoy',
+                    value: 'C\$ 1,495.00',
+                  ),
                 ),
                 SizedBox(width: 10),
-                Expanded(child: StatCard(label: 'Facturas', value: '1')),
+                Expanded(
+                  child: StatCard(label: 'Facturas', value: '1'),
+                ),
                 SizedBox(width: 10),
                 Expanded(
                   child: StatCard(label: 'Productos activos', value: '5'),

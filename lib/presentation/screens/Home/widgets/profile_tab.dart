@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_routes.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../home_module.dart';
+import '../../../../data/models/user_role.dart';
 
 /// Pestaña "Perfil": datos básicos y cerrar sesión.
 class ProfileTab extends StatelessWidget {
@@ -51,8 +51,10 @@ class ProfileTab extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: DarkColors.chip,
                   borderRadius: BorderRadius.circular(20),

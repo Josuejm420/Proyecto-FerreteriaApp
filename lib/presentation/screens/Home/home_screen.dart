@@ -1,13 +1,12 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/constants/app_colors.dart';
-import 'home_module.dart';
+import '../../../data/models/user_role.dart';
 import 'widgets/home_dashboard.dart';
 import 'widgets/profile_tab.dart';
 import 'widgets/section_placeholder_screen.dart';
 
-/// Menú principal del administrador: 4 pestañas con barra inferior.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,

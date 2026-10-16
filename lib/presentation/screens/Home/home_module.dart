@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_routes.dart';
 
-enum UserRole {
-  administrador('Administrador'),
-  vendedor('Vendedor');
-
-  const UserRole(this.label);
-  final String label;
-}
-
 /// Un módulo del menú: abre una ruta o cambia de pestaña.
 class HomeModule {
   const HomeModule({

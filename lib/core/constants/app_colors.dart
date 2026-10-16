@@ -26,6 +26,10 @@ class DarkColors {
   static const Color selectorFondo = Color(0xFF111729);
   static const Color selectorActivo = Color(0xFF1F2F6E);
 
+  // Perfil
+  static const Color rojo = Color(0xFFD64545);
+  static const Color avisoFondo = Color(0xFF3A2D22);
+
   static const List<Color> degradadoLogin = [
     Color(0xFF1B2A6B),
     Color(0xFF2B3F8F),
@@ -44,5 +48,10 @@ class DarkColors {
   static const List<Color> degradadoBienvenida = [
     Color(0xFFF5A524),
     Color(0xFFFF7A18),
+  ];
+  static const List<Color> degradadoPerfil = [
+    Color(0xFF2B3F8F),
+    Color(0xFF4A4FC4),
+    Color(0xFF6A4FC4),
   ];
 }

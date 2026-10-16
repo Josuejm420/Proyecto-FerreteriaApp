@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'core/constants/app_routes.dart';
 import 'core/constants/app_colors.dart';
-import 'presentation/screens/login/login_screen.dart';
-import 'presentation/screens/Home/home_screen.dart';
 
 void main() {
   runApp(const FerreteriaApp());
@@ -25,12 +24,8 @@ class FerreteriaApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      initialRoute: LoginScreen.routeName,
-      routes: {
-        '/': (context) => const LoginScreen(),
-        LoginScreen.routeName: (context) => const LoginScreen(),
-        HomeScreen.routeName: (context) => const HomeScreen(),
-      },
+      initialRoute: AppRoutes.login,
+      routes: AppRoutes.routes,
     );
   }
 }

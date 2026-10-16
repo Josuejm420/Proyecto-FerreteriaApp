@@ -4,32 +4,38 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:app_ferreteria/main.dart';
 
 void main() {
-  testWidgets(
-    'login button opens home without requiring credentials',
-    (tester) async {
-      await tester.pumpWidget(const FerreteriaApp());
+  testWidgets('login button opens home without requiring credentials', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
 
-      expect(find.text('Bienvenido'), findsOneWidget);
-      expect(find.text('Correo electrónico'), findsOneWidget);
-      expect(find.text('Contraseña'), findsOneWidget);
+    await tester.pumpWidget(const FerreteriaApp());
 
-      final passwordTextField = find.descendant(
-        of: find.byType(TextFormField).at(1),
-        matching: find.byType(TextField),
-      );
-      expect(tester.widget<TextField>(passwordTextField).obscureText, isTrue);
+    expect(find.text('Ferretería Don Toño'), findsOneWidget);
+    expect(find.text('Correo electrónico'), findsOneWidget);
+    expect(find.text('Contraseña'), findsOneWidget);
 
-      await tester.tap(find.byTooltip('Mostrar contraseña'));
-      await tester.pump();
+    final passwordTextField = find.descendant(
+      of: find.byType(TextFormField).at(1),
+      matching: find.byType(TextField),
+    );
+    expect(tester.widget<TextField>(passwordTextField).obscureText, isTrue);
 
-      expect(tester.widget<TextField>(passwordTextField).obscureText, isFalse);
+    await tester.tap(find.byIcon(Icons.visibility_off));
+    await tester.pump();
 
-      await tester.tap(find.text('Iniciar sesión'));
-      await tester.pumpAndSettle();
+    expect(tester.widget<TextField>(passwordTextField).obscureText, isFalse);
 
-      expect(find.text('Don Toño - Admin'), findsOneWidget);
-      expect(find.text('Métricas del sistema'), findsOneWidget);
-      expect(find.text('Productos en inventario'), findsOneWidget);
-    },
-  );
+    await tester.ensureVisible(find.text('Iniciar sesión'));
+    await tester.tap(find.text('Iniciar sesión'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Don Toño - Administrador'), findsOneWidget);
+    expect(find.text('Hola, Don Antonio Ruiz'), findsOneWidget);
+    expect(find.text('Métricas del sistema'), findsOneWidget);
+    expect(find.text('Productos en inventario'), findsOneWidget);
+  });
 }

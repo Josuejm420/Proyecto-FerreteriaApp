@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../data/models/user_role.dart';
 import 'widgets/main_scaffold.dart';
 import 'widgets/metric_card.dart';
 import 'widgets/search_form_widget.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    this.userName = 'Don Antonio Ruiz',
+    this.role = UserRole.administrador,
+  });
 
   static const routeName = '/home';
+
+  final String userName;
+  final UserRole role;
 
   @override
   Widget build(BuildContext context) {
     return MainScaffold(
-      titulo: 'Don Toño - Admin',
-      currentIndex: 0, // 0 = pestaña "Inicio"
+      titulo: 'Don Toño - ${role.label}',
+      currentIndex: 0,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Hola, bienvenido de nuevo',
+            Text(
+              'Hola, $userName',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

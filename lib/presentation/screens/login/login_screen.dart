@@ -81,8 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text(text),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Formulario válido. Falta conectar el servicio de autenticación.',
         ),
-      );
+      ),
+    );
   }
 
   // --- UI ---
@@ -123,6 +128,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.all(24),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 420),
+          Positioned.fill(
+            child: ColoredBox(color: Colors.black.withValues(alpha: 0.18)),
+          ),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 32, 24, 28),
+                    child: Form(
+                      key: _formKey,
                       child: Column(
                         children: [
                           const LoginHeader(),

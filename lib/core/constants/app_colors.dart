@@ -5,4 +5,5 @@ class AppColors {
   static const fondo = Color(0xFFF5F5F5);
   static const texto = Colors.black87;
   static const gris = Colors.grey;
+  static const naranja = Color(0xFFFFA500);
 }

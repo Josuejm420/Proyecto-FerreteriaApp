@@ -8,6 +8,7 @@ import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/products/product_detail_screen.dart';
 import '../../presentation/screens/products/product_form_screen.dart';
 import '../../presentation/screens/products/products_screen.dart';
+import '../../presentation/screens/suppliers/suppliers_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 import '../../presentation/widgets/section_placeholder_screen.dart';
 
@@ -63,6 +64,9 @@ class AppRoutes {
           return ProductFormScreen(product: product);
         },
 
+        // Módulo de Proveedores (Pantallas reales)
+        suppliers: (context) => const SuppliersScreen(showBack: true),
+
         // Placeholders para los demás módulos
         sales: (context) =>
             const SectionPlaceholderScreen(title: 'Ventas', emoji: '🧾'),
@@ -70,8 +74,6 @@ class AppRoutes {
             const SectionPlaceholderScreen(title: 'Clientes', emoji: '👥'),
         purchases: (context) =>
             const SectionPlaceholderScreen(title: 'Compras', emoji: '🚚'),
-        suppliers: (context) =>
-            const SectionPlaceholderScreen(title: 'Proveedores', emoji: '🏭'),
         catalogs: (context) =>
             const SectionPlaceholderScreen(title: 'Catálogos', emoji: '🏷️'),
         usersRoles: (context) =>

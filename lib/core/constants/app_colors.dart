@@ -25,8 +25,6 @@ class DarkColors {
   static const Color borde = Color(0xFF2A3358);
   static const Color selectorFondo = Color(0xFF111729);
   static const Color selectorActivo = Color(0xFF1F2F6E);
-
-  // Perfil
   static const Color rojo = Color(0xFFD64545);
   static const Color avisoFondo = Color(0xFF3A2D22);
 

@@ -4,9 +4,10 @@ import '../../data/models/user_role.dart';
 import '../../presentation/screens/Home/home_screen.dart';
 import '../../presentation/screens/Home/widgets/section_placeholder_screen.dart';
 import '../../presentation/screens/login/login_screen.dart';
+import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 import '../../presentation/widgets/section_placeholder_screen.dart'
-    as route_placeholder;
+    as module_placeholder;
 
 class AppRoutes {
   AppRoutes._();
@@ -14,6 +15,7 @@ class AppRoutes {
   static const String root = '/';
   static const String login = '/login';
   static const String home = '/home';
+  static const String profile = '/profile';
   static const String userProfile = UserProfileScreen.routeName;
   static const String sales = '/sales';
   static const String products = '/products';
@@ -32,32 +34,37 @@ class AppRoutes {
       final role = arguments is UserRole ? arguments : UserRole.administrador;
       return HomeScreen(userName: role.demoName, role: role);
     },
+    profile: (context) {
+      final arguments = ModalRoute.of(context)?.settings.arguments;
+      final role = arguments is UserRole ? arguments : UserRole.administrador;
+      return ProfileScreen(userName: role.demoName, role: role);
+    },
     userProfile: (context) => const UserProfileScreen(),
     sales: (context) =>
         const SectionPlaceholderScreen(title: 'Ventas', emoji: '🧾'),
     products: (context) =>
         const SectionPlaceholderScreen(title: 'Productos', emoji: '📦'),
-    clients: (context) => const route_placeholder.SectionPlaceholderScreen(
+    clients: (context) => const module_placeholder.SectionPlaceholderScreen(
       title: 'Clientes',
       emoji: '👥',
     ),
-    purchases: (context) => const route_placeholder.SectionPlaceholderScreen(
+    purchases: (context) => const module_placeholder.SectionPlaceholderScreen(
       title: 'Compras',
       emoji: '🚚',
     ),
-    suppliers: (context) => const route_placeholder.SectionPlaceholderScreen(
+    suppliers: (context) => const module_placeholder.SectionPlaceholderScreen(
       title: 'Proveedores',
       emoji: '🏭',
     ),
-    catalogs: (context) => const route_placeholder.SectionPlaceholderScreen(
+    catalogs: (context) => const module_placeholder.SectionPlaceholderScreen(
       title: 'Catálogos',
       emoji: '🏷️',
     ),
-    usersRoles: (context) => const route_placeholder.SectionPlaceholderScreen(
+    usersRoles: (context) => const module_placeholder.SectionPlaceholderScreen(
       title: 'Usuarios y roles',
       emoji: '🔐',
     ),
-    reports: (context) => const route_placeholder.SectionPlaceholderScreen(
+    reports: (context) => const module_placeholder.SectionPlaceholderScreen(
       title: 'Reportes',
       emoji: '📊',
     ),

@@ -6,6 +6,7 @@ import 'package:app_ferreteria/core/constants/app_routes.dart';
 import 'package:app_ferreteria/data/models/user_role.dart';
 import 'package:app_ferreteria/presentation/screens/Home/home_screen.dart';
 import 'package:app_ferreteria/presentation/screens/login/login_screen.dart';
+import 'package:app_ferreteria/presentation/screens/profile/profile_screen.dart';
 import 'package:app_ferreteria/presentation/screens/users/user_profile_screen.dart';
 
 void main() {
@@ -55,6 +56,28 @@ void main() {
     expect(find.text('Dirección'), findsOneWidget);
     expect(find.text('Correo electrónico'), findsOneWidget);
     expect(find.text('Rol'), findsOneWidget);
+  });
+
+  testWidgets('Home profile tab displays the complete profile screen', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const FerreteriaApp());
+    Navigator.of(
+      tester.element(find.byType(LoginScreen)),
+    ).pushNamed(HomeScreen.routeName);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Perfil'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProfileScreen), findsOneWidget);
+    expect(find.text('Mi cuenta'), findsOneWidget);
+    expect(find.text('Mis datos'), findsOneWidget);
   });
 
   testWidgets('enhanced profile route receives the selected role', (

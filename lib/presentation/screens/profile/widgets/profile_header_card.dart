@@ -31,6 +31,7 @@ class ProfileHeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 320),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -41,6 +42,7 @@ class ProfileHeaderCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
       ),
       child: Stack(
+        alignment: Alignment.center,
         children: [
           Positioned(
             left: -40,
@@ -63,69 +65,75 @@ class ProfileHeaderCard extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.12),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                Container(
-                  width: 104,
-                  height: 104,
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.25),
-                  ),
-                  child: Container(
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 104,
+                    height: 104,
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: DarkColors.naranjaBoton,
+                      color: Colors.white.withValues(alpha: 0.25),
                     ),
-                    child: Text(
-                      _initials,
-                      style: const TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w900,
-                        color: Color(0xFF1A1A1A),
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: DarkColors.naranjaBoton,
+                      ),
+                      child: Text(
+                        _initials,
+                        style: const TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF1A1A1A),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 14),
-                Text(
-                  name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: DarkColors.naranjaBoton,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    role,
+                  const SizedBox(height: 14),
+                  Text(
+                    name,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Color(0xFF1A1A1A),
-                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  email,
-                  style: const TextStyle(
-                    color: Color(0xFFE0E4F5),
-                    fontSize: 16,
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: DarkColors.naranjaBoton,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      role,
+                      style: const TextStyle(
+                        color: Color(0xFF1A1A1A),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  Text(
+                    email,
+                    style: const TextStyle(
+                      color: Color(0xFFE0E4F5),
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

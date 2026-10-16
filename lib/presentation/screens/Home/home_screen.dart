@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../data/models/user_role.dart';
+import '../profile/profile_screen.dart';
 import 'widgets/home_dashboard.dart';
-import 'widgets/profile_tab.dart';
 import 'widgets/section_placeholder_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SectionPlaceholderScreen(title: 'Ventas', emoji: '🧾'),
             const SectionPlaceholderScreen(title: 'Productos', emoji: '📦'),
-            ProfileTab(userName: widget.userName, role: widget.role),
+            ProfileScreen(userName: widget.userName, role: widget.role),
           ],
         ),
         bottomNavigationBar: NavigationBarTheme(

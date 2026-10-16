@@ -6,6 +6,7 @@ import '../../../data/models/user_role.dart';
 import '../profile/profile_screen.dart';
 import 'widgets/home_dashboard.dart';
 import 'widgets/section_placeholder_screen.dart';
+import '../products/products_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onOpenTab: _onTabSelected,
             ),
             const SectionPlaceholderScreen(title: 'Ventas', emoji: '🧾'),
-            const SectionPlaceholderScreen(title: 'Productos', emoji: '📦'),
+            const ProductsScreen(),
             ProfileScreen(userName: widget.userName, role: widget.role),
           ],
         ),

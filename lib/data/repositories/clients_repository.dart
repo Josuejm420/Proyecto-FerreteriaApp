@@ -36,6 +36,13 @@ class ClientsRepository {
 
   List<ClientModel> getAll() => List.unmodifiable(_clients);
 
+  ClientModel? findById(int? id) {
+    for (final client in _clients) {
+      if (client.id == id) return client;
+    }
+    return null;
+  }
+
   Future<ClientModel> save(ClientModel client) async {
     await Future.delayed(const Duration(milliseconds: 400));
 

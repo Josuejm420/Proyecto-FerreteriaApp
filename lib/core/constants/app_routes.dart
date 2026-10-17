@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/products_model.dart';
 import '../../data/models/user_role.dart';
 import '../../presentation/screens/Home/home_screen.dart';
+import '../../presentation/screens/category/catalogs_screen.dart';
 import '../../presentation/screens/login/login_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/products/product_detail_screen.dart';
@@ -64,8 +65,11 @@ class AppRoutes {
           return ProductFormScreen(product: product);
         },
 
-        // Módulo de Proveedores (Pantallas reales)
+        // Módulo de Proveedores (Pantalla real)
         suppliers: (context) => const SuppliersScreen(showBack: true),
+
+        // Módulo de Catálogos: categorías y presentaciones (Pantalla real)
+        catalogs: (context) => const CatalogsScreen(showBack: true),
 
         // Placeholders para los demás módulos
         sales: (context) =>
@@ -74,8 +78,6 @@ class AppRoutes {
             const SectionPlaceholderScreen(title: 'Clientes', emoji: '👥'),
         purchases: (context) =>
             const SectionPlaceholderScreen(title: 'Compras', emoji: '🚚'),
-        catalogs: (context) =>
-            const SectionPlaceholderScreen(title: 'Catálogos', emoji: '🏷️'),
         usersRoles: (context) =>
             const SectionPlaceholderScreen(title: 'Usuarios y roles', emoji: '🔐'),
         reports: (context) =>

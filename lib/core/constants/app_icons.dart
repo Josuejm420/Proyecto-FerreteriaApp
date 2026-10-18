@@ -23,4 +23,8 @@ class AppIcons {
   static const IconData limpiar = Icons.close;
   static const IconData agregar = Icons.add;
   static const IconData volver = Icons.arrow_back;
+
+  // Estado de facturas y compras
+  static const IconData anular = Icons.block_outlined;
+  static const IconData vigente = Icons.check_circle_outline;
 }

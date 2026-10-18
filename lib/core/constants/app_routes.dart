@@ -10,6 +10,7 @@ import '../../presentation/screens/products/product_detail_screen.dart';
 import '../../presentation/screens/products/product_form_screen.dart';
 import '../../presentation/screens/products/products_screen.dart';
 import '../../presentation/screens/suppliers/suppliers_screen.dart';
+import '../../presentation/screens/Ventas/sales_screen.dart';
 import '../../presentation/screens/Clientes/clients_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 import '../../presentation/widgets/section_placeholder_screen.dart';
@@ -91,9 +92,11 @@ class AppRoutes {
     // Módulo de Clientes (Pantalla real)
     clients: (context) => const ClientsScreen(showBack: true),
 
-    // Placeholders para los demás módulos
+    // Módulo de Ventas (Pantalla real)
     sales: (context) =>
-        const SectionPlaceholderScreen(title: 'Ventas', emoji: '🧾'),
+        const SalesScreen(role: UserRole.administrador, showBack: true),
+
+    // Placeholders para los demás módulos
     purchases: (context) =>
         const SectionPlaceholderScreen(title: 'Compras', emoji: '🚚'),
     catalogs: (context) =>

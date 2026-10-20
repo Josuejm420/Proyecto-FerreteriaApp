@@ -9,6 +9,7 @@ import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/products/product_detail_screen.dart';
 import '../../presentation/screens/products/product_form_screen.dart';
 import '../../presentation/screens/products/products_screen.dart';
+import '../../presentation/screens/shopping/purchases_screen.dart';
 import '../../presentation/screens/suppliers/suppliers_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 import '../../presentation/widgets/section_placeholder_screen.dart';
@@ -54,14 +55,17 @@ class AppRoutes {
         // Módulo de Productos (Pantallas reales)
         products: (context) => const ProductsScreen(showBack: true),
         productDetail: (context) {
-          final product =
-              ModalRoute.of(context)!.settings.arguments as ProductsModel;
+          final arguments = ModalRoute.of(context)?.settings.arguments;
+          final product = arguments is ProductsModel ? arguments : null;
+          if (product == null) {
+            return const ProductsScreen(showBack: true);
+          }
           return ProductDetailScreen(product: product);
         },
         productForm: (context) {
           // Sin argumentos = producto nuevo; con argumento = editar.
-          final product =
-              ModalRoute.of(context)?.settings.arguments as ProductsModel?;
+          final arguments = ModalRoute.of(context)?.settings.arguments;
+          final product = arguments is ProductsModel ? arguments : null;
           return ProductFormScreen(product: product);
         },
 
@@ -71,13 +75,14 @@ class AppRoutes {
         // Módulo de Catálogos: categorías y presentaciones (Pantalla real)
         catalogs: (context) => const CatalogsScreen(showBack: true),
 
+        // Módulo de Compras (Pantalla real)
+        purchases: (context) => const PurchasesScreen(showBack: true),
+
         // Placeholders para los demás módulos
         sales: (context) =>
             const SectionPlaceholderScreen(title: 'Ventas', emoji: '🧾'),
         clients: (context) =>
             const SectionPlaceholderScreen(title: 'Clientes', emoji: '👥'),
-        purchases: (context) =>
-            const SectionPlaceholderScreen(title: 'Compras', emoji: '🚚'),
         usersRoles: (context) =>
             const SectionPlaceholderScreen(title: 'Usuarios y roles', emoji: '🔐'),
         reports: (context) =>

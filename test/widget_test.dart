@@ -240,4 +240,17 @@ void main() {
     expect(find.text('Juan Pérez'), findsOneWidget);
     expect(find.text('Empleado'), findsOneWidget);
   });
+
+  testWidgets('product detail route falls back safely without arguments', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const FerreteriaApp());
+
+    Navigator.of(
+      tester.element(find.byType(LoginScreen)),
+    ).pushNamed(AppRoutes.productDetail);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProductsScreen), findsOneWidget);
+  });
 }

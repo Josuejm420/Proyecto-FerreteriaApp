@@ -24,9 +24,13 @@ class HomeDashboard extends StatelessWidget {
   void _openModule(BuildContext context, HomeModule module) {
     if (module.tabIndex != null) {
       onOpenTab(module.tabIndex!);
-    } else {
-      Navigator.pushNamed(context, module.route!);
+      return;
     }
+
+    final route = module.route;
+    if (route == null || route.isEmpty) return;
+
+    Navigator.pushNamed(context, route);
   }
 
   @override

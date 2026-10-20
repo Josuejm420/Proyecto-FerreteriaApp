@@ -72,16 +72,22 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
     if (!_formKey.currentState!.validate()) return;
 
+    final categoria = _categoria;
+    final presentacion = _presentacion;
+    if (categoria == null || presentacion == null) {
+      _formKey.currentState?.validate();
+      return;
+    }
+
     setState(() => _isSaving = true);
 
     final base = widget.product;
-    final presentacion = _presentacion!;
 
     final product = ProductsModel(
       id: base?.id,
       nombre: _nombreController.text.trim(),
       descripcion: _descripcionController.text.trim(),
-      categoria: _categoria!,
+      categoria: categoria,
       presentacion: presentacion.nombre,
       unidadMedida: presentacion.unidad,
       peso: base?.peso,

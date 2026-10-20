@@ -11,6 +11,8 @@ import '../../presentation/screens/products/product_form_screen.dart';
 import '../../presentation/screens/products/products_screen.dart';
 import '../../presentation/screens/shopping/purchases_screen.dart';
 import '../../presentation/screens/suppliers/suppliers_screen.dart';
+import '../../presentation/screens/Ventas/sales_screen.dart';
+import '../../presentation/screens/Clientes/clients_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 import '../../presentation/widgets/section_placeholder_screen.dart';
 
@@ -38,19 +40,19 @@ class AppRoutes {
   static const String reports = '/reports';
 
   static Map<String, WidgetBuilder> get routes => {
-        root: (context) => const LoginScreen(),
-        login: (context) => const LoginScreen(),
-        home: (context) {
-          final arguments = ModalRoute.of(context)?.settings.arguments;
-          final role = arguments is UserRole ? arguments : UserRole.administrador;
-          return HomeScreen(userName: role.demoName, role: role);
-        },
-        profile: (context) {
-          final arguments = ModalRoute.of(context)?.settings.arguments;
-          final role = arguments is UserRole ? arguments : UserRole.administrador;
-          return ProfileScreen(userName: role.demoName, role: role);
-        },
-        userProfile: (context) => const UserProfileScreen(),
+    root: (context) => const LoginScreen(),
+    login: (context) => const LoginScreen(),
+    home: (context) {
+      final arguments = ModalRoute.of(context)?.settings.arguments;
+      final role = arguments is UserRole ? arguments : UserRole.administrador;
+      return HomeScreen(userName: role.demoName, role: role);
+    },
+    profile: (context) {
+      final arguments = ModalRoute.of(context)?.settings.arguments;
+      final role = arguments is UserRole ? arguments : UserRole.administrador;
+      return ProfileScreen(userName: role.demoName, role: role);
+    },
+    userProfile: (context) => const UserProfileScreen(),
 
         // Módulo de Productos (Pantallas reales)
         products: (context) => const ProductsScreen(showBack: true),
@@ -88,4 +90,25 @@ class AppRoutes {
         reports: (context) =>
             const SectionPlaceholderScreen(title: 'Reportes', emoji: '📊'),
       };
+}
+    // Módulo de Proveedores (Pantallas reales)
+    suppliers: (context) => const SuppliersScreen(showBack: true),
+
+    // Módulo de Clientes (Pantalla real)
+    clients: (context) => const ClientsScreen(showBack: true),
+
+    // Módulo de Ventas (Pantalla real)
+    sales: (context) =>
+        const SalesScreen(role: UserRole.administrador, showBack: true),
+
+    // Placeholders para los demás módulos
+    purchases: (context) =>
+        const SectionPlaceholderScreen(title: 'Compras', emoji: '🚚'),
+    catalogs: (context) =>
+        const SectionPlaceholderScreen(title: 'Catálogos', emoji: '🏷️'),
+    usersRoles: (context) =>
+        const SectionPlaceholderScreen(title: 'Usuarios y roles', emoji: '🔐'),
+    reports: (context) =>
+        const SectionPlaceholderScreen(title: 'Reportes', emoji: '📊'),
+  };
 }

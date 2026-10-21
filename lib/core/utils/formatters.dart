@@ -14,3 +14,11 @@ String formatDate(DateTime date) {
   final month = date.month.toString().padLeft(2, '0');
   return '$day/$month/${date.year}';
 }
+
+class AppFormat {
+  AppFormat._();
+
+  static String money(double value) => formatMoney(value);
+
+  static String date(DateTime value) => formatDate(value);
+}

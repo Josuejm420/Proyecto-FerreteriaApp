@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/models/user_role.dart';
 import '../profile/profile_screen.dart';
+import '../Ventas/sales_screen.dart';
 import 'widgets/home_dashboard.dart';
-import 'widgets/section_placeholder_screen.dart';
 import '../products/products_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
               role: widget.role,
               onOpenTab: _onTabSelected,
             ),
-            const SectionPlaceholderScreen(title: 'Ventas', emoji: '🧾'),
+            SalesScreen(role: widget.role),
             const ProductsScreen(),
             ProfileScreen(userName: widget.userName, role: widget.role),
           ],

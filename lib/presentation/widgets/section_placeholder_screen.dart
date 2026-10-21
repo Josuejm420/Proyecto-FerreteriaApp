@@ -1,0 +1,48 @@
+import 'package:flutter/material.dart';
+
+import '../../core/constants/app_colors.dart';
+
+class SectionPlaceholderScreen extends StatelessWidget {
+  const SectionPlaceholderScreen({
+    super.key,
+    required this.title,
+    required this.emoji,
+  });
+
+  final String title;
+  final String emoji;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: DarkColors.fondo,
+      appBar: AppBar(
+        title: Text(title),
+        backgroundColor: DarkColors.tarjeta,
+        foregroundColor: Colors.white,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 64)),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Sección en construcción',
+              style: TextStyle(color: DarkColors.textoSuave),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

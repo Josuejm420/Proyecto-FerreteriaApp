@@ -27,6 +27,7 @@ class AppIcons {
   // Estado de facturas y compras
   static const IconData anular = Icons.block_outlined;
   static const IconData vigente = Icons.check_circle_outline;
+  static const IconData advertencia = Icons.warning_amber_outlined;
 
   // Decoración de Home
   static const IconData herramientas = Icons.handyman_outlined; // encabezado

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_icons.dart';
 
 /// Hoja inferior de confirmación. Devuelve true si el usuario confirma.
 Future<bool?> showCancelPurchaseSheet(BuildContext context) {
@@ -28,13 +29,23 @@ Future<bool?> showCancelPurchaseSheet(BuildContext context) {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              '⚠️ Confirmar',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 26,
-                fontWeight: FontWeight.w800,
-              ),
+            const Row(
+              children: [
+                Icon(
+                  AppIcons.advertencia,
+                  color: DarkColors.naranjaBoton,
+                  size: 30,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  'Confirmar',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             const Text(

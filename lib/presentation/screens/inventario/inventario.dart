@@ -66,4 +66,29 @@ class _InventarioAppState extends State<InventarioApp> {
                     Icons.handyman,
                   ));
                 });
-                
+                  Navigator.pop(ctx);
+              }
+            },
+            child: const Text('Guardar', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+    @override
+  Widget build(BuildContext context) {
+    // Filtrado de productos
+    final listaFiltrada = _productos.where((p) {
+      final coincide = p.nombre.toLowerCase().contains(_busqueda.toLowerCase());
+      if (_filtro == 'Stock Bajo') return coincide && p.estado == 'Crítico';
+      if (_filtro == 'Próximo Vencimiento') return coincide && p.proximo;
+      return coincide;
+    }).toList();
+    final titulos = ['Inicio', 'Inventario', 'Facturación', 'Reportes', 'Más'];
+    return Scaffold(
+      backgroundColor: const Color(0xFFF4F6F9),
+      appBar: AppBar(
+        backgroundColor: _azul,
+        leading: const Icon(Icons.menu, color: Colors.white),
+        title: Text(titulos[_tab], style: const TextStyle(color: Colors.white)),
+      ),

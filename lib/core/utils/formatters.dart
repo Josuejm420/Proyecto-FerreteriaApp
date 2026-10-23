@@ -1,5 +1,4 @@
 /// Formatos de texto que usan varias pantallas (dinero y fechas).
-/// Así todas muestran "C$ 1,450.00" y "14/10/2026" de la misma forma.
 class AppFormat {
   AppFormat._();
 
@@ -14,7 +13,7 @@ class AppFormat {
     return '${signo}C\$ $entero.${parts[1]}';
   }
 
-  /// DateTime(2026, 10, 14) -> "14/10/2026"
+  /// DateTime
   static String date(DateTime date) {
     final day = date.day.toString().padLeft(2, '0');
     final month = date.month.toString().padLeft(2, '0');

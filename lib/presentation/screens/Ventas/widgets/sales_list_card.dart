@@ -7,7 +7,6 @@ import '../../../../data/models/sale_model.dart';
 import '../../../../data/repositories/sales_repository.dart';
 import '../../../widgets/document_status_chip.dart';
 
-/// Tarjeta de una factura dentro de la lista de ventas.
 class SaleListCard extends StatelessWidget {
   const SaleListCard({super.key, required this.sale, required this.onTap});
 
@@ -16,7 +15,6 @@ class SaleListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Las facturas anuladas se pintan en rojo; las demás usan los acentos.
     final index = ((sale.id ?? 1) - 1) % DarkColors.acentosProducto.length;
     final accent = sale.anulada
         ? DarkColors.inactivo

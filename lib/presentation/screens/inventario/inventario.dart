@@ -32,4 +32,38 @@ class _InventarioAppState extends State<InventarioApp> {
     Producto('Tornillo madera 3"', 'Stock: 13', 13, 210.0, 'Suficiente', Icons.hardware),
     Producto('Pintura Látex Pro', 'Stock: 1', 1, 150.0, 'Crítico', Icons.format_paint, true),
   ];
-  
+    // Diálogo simple para agregar producto
+  void _mostrarDialogoAgregar() {
+    final nombreCtrl = TextEditingController();
+    final stockCtrl = TextEditingController();
+    final precioCtrl = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Nuevo Producto'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: nombreCtrl, decoration: const InputDecoration(labelText: 'Nombre')),
+            TextField(controller: stockCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Stock')),
+            TextField(controller: precioCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Precio (C\$)')),
+          ],
+        ),
+         actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: _azul),
+            onPressed: () {
+              if (nombreCtrl.text.isNotEmpty) {
+                final stock = int.tryParse(stockCtrl.text) ?? 0;
+                setState(() {
+                  _productos.add(Producto(
+                    nombreCtrl.text,
+                    'Stock: $stock',
+                    stock,
+                    double.tryParse(precioCtrl.text) ?? 0.0,
+                    stock <= 5 ? 'Crítico' : 'Suficiente',
+                    Icons.handyman,
+                  ));
+                });
+                

@@ -202,3 +202,33 @@ class _InventarioAppState extends State<InventarioApp> {
                                   ),
                                 ),
                               ),
+                               // BOTÓN EDITAR (Abre la pantalla de edición)
+                              IconButton(
+                                icon: Icon(Icons.edit, size: 18, color: _azul),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => EditarProductoScreen(producto: p)),
+                                  );
+                                  setState(() {}); // Refresca los cambios al volver
+                                },
+                              ),
+                              const SizedBox(width: 6),
+                              // BOTÓN ELIMINAR
+                              IconButton(
+                                icon: const Icon(Icons.close, size: 18, color: Colors.grey),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () => setState(() => _productos.remove(p)),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),

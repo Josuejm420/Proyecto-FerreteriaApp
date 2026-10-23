@@ -257,3 +257,24 @@ class _InventarioAppState extends State<InventarioApp> {
     );
   }
 }
+// -----------------------------------------------------------
+// 3. PANTALLA SECUNDARIA: EDITAR PRODUCTO
+// -----------------------------------------------------------
+class EditarProductoScreen extends StatefulWidget {
+  final Producto producto;
+  const EditarProductoScreen({super.key, required this.producto});
+  @override
+  State<EditarProductoScreen> createState() => _EditarProductoScreenState();
+}
+class _EditarProductoScreenState extends State<EditarProductoScreen> {
+  late TextEditingController _nombreCtrl;
+  late TextEditingController _stockCtrl;
+  late TextEditingController _precioCtrl;
+  late IconData _iconoSeleccionado;
+  final List<IconData> _iconos = [
+    Icons.construction,
+    Icons.cable,
+    Icons.inventory_2,
+    Icons.hardware,
+    Icons.format_paint,
+  ];

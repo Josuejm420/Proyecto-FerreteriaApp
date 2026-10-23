@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/models/presentation_model.dart';
 import '../../../data/repositories/categories_repository.dart';
@@ -155,7 +156,11 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
           children: [
             const SizedBox(height: 8),
             ListTile(
-              leading: const Text('🏷️', style: TextStyle(fontSize: 24)),
+              leading: const Icon(
+                AppIcons.categoria,
+                color: Color(0xFFF5A524),
+                size: 26,
+              ),
               title: const Text(
                 'Nueva categoría',
                 style: TextStyle(color: Colors.white, fontSize: 17),
@@ -163,7 +168,11 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
               onTap: () => Navigator.pop(sheetContext, CatalogFilter.categorias),
             ),
             ListTile(
-              leading: const Text('📏', style: TextStyle(fontSize: 24)),
+              leading: const Icon(
+                AppIcons.presentacion,
+                color: Color(0xFF3B82F6),
+                size: 26,
+              ),
               title: const Text(
                 'Nueva presentación',
                 style: TextStyle(color: Colors.white, fontSize: 17),
@@ -201,7 +210,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
         backgroundColor: DarkColors.naranjaBoton,
         foregroundColor: const Color(0xFF1A1A1A),
         shape: const CircleBorder(),
-        child: const Icon(Icons.add, size: 32),
+        child: const Icon(AppIcons.agregar, size: 32),
       ),
       body: SafeArea(
         bottom: false,
@@ -249,7 +258,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
                           const SizedBox(height: 12),
                           for (final category in categories) ...[
                             CatalogListCard(
-                              emoji: '🏷️',
+                              icon: AppIcons.categoria,
                               title: category.nombre,
                               subtitle: category.descripcion.isEmpty
                                   ? 'Categoría'
@@ -267,7 +276,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
                           const SizedBox(height: 12),
                           for (final presentation in presentations) ...[
                             CatalogListCard(
-                              emoji: '📏',
+                              icon: AppIcons.presentacion,
                               title: presentation.nombre,
                               subtitle: presentation.resumen,
                               activo: presentation.activo,

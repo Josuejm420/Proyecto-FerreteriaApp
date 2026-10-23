@@ -43,4 +43,8 @@ class AppIcons {
   static const IconData permisos = Icons.shield_outlined;
   static const IconData candado = Icons.lock_outline;
   static const IconData siguiente = Icons.chevron_right;
+
+  // Catálogos
+  static const IconData categoria = Icons.sell_outlined; // etiqueta
+  static const IconData presentacion = Icons.straighten_outlined; // regla
 }

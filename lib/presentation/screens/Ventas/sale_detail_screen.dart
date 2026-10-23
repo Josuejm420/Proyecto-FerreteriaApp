@@ -143,7 +143,7 @@ class _SaleDetailScreenState extends State<SaleDetailScreen> {
   }
 }
 
-/// Título pequeño con barra naranja, para separar secciones.
+///separar secciones.
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel(this.text);
 

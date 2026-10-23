@@ -7,7 +7,7 @@ import '../../products/widgets/status_chip.dart';
 class CatalogListCard extends StatelessWidget {
   const CatalogListCard({
     super.key,
-    required this.emoji,
+    required this.icon,
     required this.title,
     required this.subtitle,
     required this.activo,
@@ -15,7 +15,7 @@ class CatalogListCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final String emoji;
+  final IconData icon;
   final String title;
   final String subtitle;
   final bool activo;
@@ -51,7 +51,7 @@ class CatalogListCard extends StatelessWidget {
                           color: iconBackground,
                           borderRadius: BorderRadius.circular(18),
                         ),
-                        child: Text(emoji, style: const TextStyle(fontSize: 26)),
+                        child: Icon(icon, color: accent, size: 28),
                       ),
                       const SizedBox(width: 14),
                       Expanded(

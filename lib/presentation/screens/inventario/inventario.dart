@@ -362,3 +362,28 @@ class _EditarProductoScreenState extends State<EditarProductoScreen> {
             ],
           ),
           const SizedBox(height: 25),
+          // 4. Botón Guardar Cambios
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFF7B928)),
+              onPressed: () {
+                // Guarda directamente en el producto referenciado
+                widget.producto.nombre = _nombreCtrl.text;
+                widget.producto.stock = int.tryParse(_stockCtrl.text) ?? widget.producto.stock;
+                widget.producto.subtitulo = 'Stock: ${widget.producto.stock}';
+                widget.producto.precio = double.tryParse(_precioCtrl.text) ?? widget.producto.precio;
+                widget.producto.icono = _iconoSeleccionado;
+                widget.producto.estado = widget.producto.stock <= 5 ? 'Crítico' : 'Suficiente';
+                // Regresa al inventario
+                Navigator.pop(context);
+              },
+              child: const Text('Guardar Cambios', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

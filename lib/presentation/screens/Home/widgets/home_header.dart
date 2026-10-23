@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_icons.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key});
@@ -35,7 +36,7 @@ class HomeHeader extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('🛠️', style: TextStyle(fontSize: 26)),
+                  Icon(AppIcons.herramientas, color: Colors.white, size: 28),
                   SizedBox(width: 10),
                   Text(
                     'DON TOÑO',

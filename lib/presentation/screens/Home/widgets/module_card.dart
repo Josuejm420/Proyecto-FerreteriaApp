@@ -31,7 +31,7 @@ class ModuleCard extends StatelessWidget {
                   color: module.color,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Text(module.emoji, style: const TextStyle(fontSize: 24)),
+                child: Icon(module.icon, color: module.accent, size: 26),
               ),
               Text(
                 module.label,

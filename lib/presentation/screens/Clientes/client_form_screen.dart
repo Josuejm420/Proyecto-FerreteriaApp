@@ -8,7 +8,7 @@ import '../../widgets/app_text_field.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/screen_title_bar.dart';
 
-/// Formulario para crear (client == null) o editar un cliente.
+/// formulario para crear o editar un cliente.
 class ClientFormScreen extends StatefulWidget {
   const ClientFormScreen({super.key, this.client});
 

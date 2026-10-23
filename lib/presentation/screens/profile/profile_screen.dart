@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../data/models/user_role.dart';
 import 'widgets/account_option_tile.dart';
 import 'widgets/dashed_notice.dart';
@@ -68,13 +69,25 @@ class ProfileScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '🛡️ Mis permisos · ${role.label}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  const Icon(
+                    AppIcons.permisos,
+                    color: DarkColors.naranja,
+                    size: 26,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Mis permisos · ${role.label}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               for (final permission in _permissions)
@@ -82,7 +95,11 @@ class ProfileScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
-                      const Text('✅', style: TextStyle(fontSize: 18)),
+                      const Icon(
+                        AppIcons.vigente,
+                        color: Color(0xFF22A55B),
+                        size: 22,
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
@@ -132,7 +149,7 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: ProfileStatCard(
-                    emoji: '🧾',
+                    icon: AppIcons.ventas,
                     label: 'Facturas atendidas',
                     value: '0',
                   ),
@@ -140,7 +157,7 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(width: 12),
                 Expanded(
                   child: ProfileStatCard(
-                    emoji: '💰',
+                    icon: AppIcons.dinero,
                     label: 'Total vendido',
                     value: 'C\$ 0.00',
                   ),
@@ -149,7 +166,7 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const SectionTitle(emoji: '✨', text: 'Mi cuenta'),
+          const SectionTitle(icon: AppIcons.cuenta, text: 'Mi cuenta'),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(12),
@@ -160,27 +177,38 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               children: [
                 AccountOptionTile(
-                  emoji: '✏️',
+                  icon: AppIcons.editar,
+                  iconColor: const Color(0xFFF5A524),
                   iconBackground: const Color(0xFF4A3F35),
                   title: 'Editar mis datos',
-                  trailing: const Text('🔒', style: TextStyle(fontSize: 20)),
+                  trailing: const Icon(
+                    AppIcons.candado,
+                    color: DarkColors.textoSuave,
+                    size: 22,
+                  ),
                   onTap: () => _onLockedTap(context),
                 ),
                 const SizedBox(height: 10),
                 AccountOptionTile(
-                  emoji: '🔑',
+                  icon: AppIcons.contrasena,
+                  iconColor: const Color(0xFF3B82F6),
                   iconBackground: const Color(0xFF1F3156),
                   title: 'Cambiar contraseña',
-                  trailing: const Text('🔒', style: TextStyle(fontSize: 20)),
+                  trailing: const Icon(
+                    AppIcons.candado,
+                    color: DarkColors.textoSuave,
+                    size: 22,
+                  ),
                   onTap: () => _onLockedTap(context),
                 ),
                 const SizedBox(height: 10),
                 AccountOptionTile(
-                  emoji: '🛡️',
+                  icon: AppIcons.permisos,
+                  iconColor: const Color(0xFF22A55B),
                   iconBackground: const Color(0xFF1B3B3F),
                   title: 'Mis permisos',
                   trailing: const Icon(
-                    Icons.chevron_right,
+                    AppIcons.siguiente,
                     color: DarkColors.textoSuave,
                   ),
                   onTap: () => _onPermissionsTap(context),
@@ -189,7 +217,7 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const SectionTitle(emoji: '📋', text: 'Mis datos'),
+          const SectionTitle(icon: AppIcons.datos, text: 'Mis datos'),
           const SizedBox(height: 12),
           ProfileDataCard(
             nombre: userName,
@@ -199,7 +227,10 @@ class ProfileScreen extends StatelessWidget {
             miembroDesde: _memberSince,
           ),
           const SizedBox(height: 16),
-          const DashedNotice(text: '🔒 $_lockedMessage.'),
+          const DashedNotice(
+            icon: AppIcons.candado,
+            text: '$_lockedMessage.',
+          ),
           const SizedBox(height: 16),
           FilledButton(
             onPressed: () => _onLogout(context),

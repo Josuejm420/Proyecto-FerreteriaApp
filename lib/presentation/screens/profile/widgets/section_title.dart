@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
-/// Título de sección con barra naranja a la izquierda.
+/// Título de sección con barra naranja a la izquierda y un ícono.
 class SectionTitle extends StatelessWidget {
-  const SectionTitle({super.key, required this.emoji, required this.text});
+  const SectionTitle({super.key, required this.icon, required this.text});
 
-  final String emoji;
+  final IconData icon;
   final String text;
 
   @override
@@ -22,7 +22,7 @@ class SectionTitle extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        Text(emoji, style: const TextStyle(fontSize: 20)),
+        Icon(icon, color: DarkColors.naranja, size: 24),
         const SizedBox(width: 8),
         Text(
           text,

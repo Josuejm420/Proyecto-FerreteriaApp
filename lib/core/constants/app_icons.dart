@@ -32,4 +32,14 @@ class AppIcons {
   static const IconData herramientas = Icons.handyman_outlined; // encabezado
   static const IconData llave = Icons.build_outlined; // llave grande de bienvenida
   static const IconData saludo = Icons.waving_hand_outlined; // "Bienvenido"
+
+  // Perfil
+  static const IconData dinero = Icons.payments_outlined; // total vendido
+  static const IconData cuenta = Icons.manage_accounts_outlined; // "Mi cuenta"
+  static const IconData datos = Icons.assignment_outlined; // "Mis datos"
+  static const IconData editar = Icons.edit_outlined;
+  static const IconData contrasena = Icons.key_outlined;
+  static const IconData permisos = Icons.shield_outlined;
+  static const IconData candado = Icons.lock_outline;
+  static const IconData siguiente = Icons.chevron_right;
 }

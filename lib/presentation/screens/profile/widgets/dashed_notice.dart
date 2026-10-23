@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
-/// Aviso con borde naranja punteado.
+/// Aviso con borde naranja punteado y un ícono a la izquierda.
 class DashedNotice extends StatelessWidget {
-  const DashedNotice({super.key, required this.text});
+  const DashedNotice({super.key, required this.icon, required this.text});
 
+  final IconData icon;
   final String text;
 
   @override
@@ -22,14 +23,26 @@ class DashedNotice extends StatelessWidget {
           color: DarkColors.avisoFondo,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: Color(0xFFF3E6D0),
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            height: 1.35,
-          ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 1),
+              child: Icon(icon, color: DarkColors.naranjaBoton, size: 22),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Color(0xFFF3E6D0),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  height: 1.35,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_icons.dart';
 import '../../../../data/models/supplier_model.dart';
 import '../../products/widgets/status_chip.dart';
 
@@ -45,7 +46,11 @@ class SupplierListCard extends StatelessWidget {
                           color: iconBackground,
                           borderRadius: BorderRadius.circular(18),
                         ),
-                        child: const Text('🏭', style: TextStyle(fontSize: 26)),
+                        child: Icon(
+                          AppIcons.proveedores,
+                          color: accent,
+                          size: 28,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(

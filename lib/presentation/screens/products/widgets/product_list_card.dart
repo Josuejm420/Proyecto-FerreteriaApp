@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_icons.dart';
 import '../../../../data/models/products_model.dart';
 import 'status_chip.dart';
 
@@ -46,8 +47,7 @@ class ProductListCard extends StatelessWidget {
                           color: iconBackground,
                           borderRadius: BorderRadius.circular(18),
                         ),
-                        child:
-                            const Text('📦', style: TextStyle(fontSize: 26)),
+                        child: Icon(AppIcons.productos, color: accent, size: 28),
                       ),
                       const SizedBox(width: 14),
                       Expanded(

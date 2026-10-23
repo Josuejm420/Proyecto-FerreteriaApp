@@ -30,6 +30,7 @@ class AppIcons {
   static const IconData advertencia = Icons.warning_amber_outlined;
 
   // Decoración de Home y Login
+  // Decoración de Home
   static const IconData herramientas = Icons.handyman_outlined; // encabezado
   static const IconData llave = Icons.build_outlined; // llave grande de bienvenida
   static const IconData saludo = Icons.waving_hand_outlined; // "Bienvenido"

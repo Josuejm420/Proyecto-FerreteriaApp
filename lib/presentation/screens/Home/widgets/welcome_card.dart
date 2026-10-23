@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_icons.dart';
 
 class WelcomeCard extends StatelessWidget {
   const WelcomeCard({super.key, required this.name, required this.role});
@@ -30,7 +31,11 @@ class WelcomeCard extends StatelessWidget {
               angle: 0.5,
               child: Opacity(
                 opacity: 0.35,
-                child: const Text('🔧', style: TextStyle(fontSize: 120)),
+                child: const Icon(
+                  AppIcons.llave,
+                  size: 120,
+                  color: Color(0xFF5A3A00),
+                ),
               ),
             ),
           ),
@@ -39,9 +44,16 @@ class WelcomeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Bienvenido 👋',
-                  style: TextStyle(color: Color(0xFF5A3A00), fontSize: 16),
+                const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Bienvenido',
+                      style: TextStyle(color: Color(0xFF5A3A00), fontSize: 16),
+                    ),
+                    SizedBox(width: 6),
+                    Icon(AppIcons.saludo, size: 18, color: Color(0xFF5A3A00)),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Text(

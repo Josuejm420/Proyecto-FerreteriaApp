@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
-/// Fila de "Mi cuenta": icono en círculo, título y un widget al final.
+/// Fila de "Mi cuenta": ícono en círculo, título y un widget al final.
 class AccountOptionTile extends StatelessWidget {
   const AccountOptionTile({
     super.key,
-    required this.emoji,
+    required this.icon,
+    required this.iconColor,
     required this.iconBackground,
     required this.title,
     required this.trailing,
     required this.onTap,
   });
 
-  final String emoji;
+  final IconData icon;
+  final Color iconColor;
   final Color iconBackground;
   final String title;
   final Widget trailing;
@@ -39,7 +41,7 @@ class AccountOptionTile extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: iconBackground,
                 ),
-                child: Text(emoji, style: const TextStyle(fontSize: 22)),
+                child: Icon(icon, color: iconColor, size: 24),
               ),
               const SizedBox(width: 16),
               Expanded(

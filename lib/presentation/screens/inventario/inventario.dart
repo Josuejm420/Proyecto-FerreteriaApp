@@ -330,3 +330,35 @@ class _EditarProductoScreenState extends State<EditarProductoScreen> {
             }).toList(),
           ),
           const SizedBox(height: 15),
+          // 2. Nombre
+          const Text('Nombre del producto', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 6),
+          TextField(controller: _nombreCtrl, decoration: const InputDecoration(border: OutlineInputBorder(), filled: true, fillColor: Colors.white)),
+          const SizedBox(height: 15),
+          // 3. Stock y Precio
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Stock Actual', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    TextField(controller: _stockCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(border: OutlineInputBorder(), filled: true, fillColor: Colors.white)),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Precio (C\$)', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    TextField(controller: _precioCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(border: OutlineInputBorder(), filled: true, fillColor: Colors.white)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 25),

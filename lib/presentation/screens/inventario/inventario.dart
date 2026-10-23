@@ -112,3 +112,28 @@ class _InventarioAppState extends State<InventarioApp> {
                     ),
                   ),
                   const SizedBox(height: 10),
+                    // 2. Filtros horizontales
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: ['Todo', 'Stock Bajo', 'Próximo Vencimiento'].map((f) {
+                        final sel = _filtro == f;
+                        return GestureDetector(
+                          onTap: () => setState(() => _filtro = f),
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: sel ? _azul : const Color(0xFFE2E8F0),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              f,
+                              style: TextStyle(color: sel ? Colors.white : Colors.black87, fontWeight: FontWeight.bold, fontSize: 12),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),

@@ -150,3 +150,33 @@ class _InventarioAppState extends State<InventarioApp> {
                     ],
                   ),
                   const Divider(),
+                     // 4. Lista de productos
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: listaFiltrada.length,
+                      separatorBuilder: (, _) => const Divider(height: 1),
+                      itemBuilder: (ctx, i) {
+                        final p = listaFiltrada[i];
+                        final esCritico = p.estado == 'Crítico';
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Row(
+                            children: [
+                              // Ícono
+                              Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(color: const Color(0xFFF0F4F8), borderRadius: BorderRadius.circular(8)),
+                                child: Icon(p.icono, color: _azul),
+                              ),
+                              const SizedBox(width: 10),
+                              // Nombre y subtítulo
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(p.nombre, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13), maxLines: 1),
+                                    Text(p.subtitulo, style: const TextStyle(color: Colors.grey, fontSize: 11)),
+                                  ],
+                                ),
+                              ),

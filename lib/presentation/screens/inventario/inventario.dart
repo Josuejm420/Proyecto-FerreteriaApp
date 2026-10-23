@@ -278,3 +278,32 @@ class _EditarProductoScreenState extends State<EditarProductoScreen> {
     Icons.hardware,
     Icons.format_paint,
   ];
+    @override
+  void initState() {
+    super.initState();
+    _nombreCtrl = TextEditingController(text: widget.producto.nombre);
+    _stockCtrl = TextEditingController(text: widget.producto.stock.toString());
+    _precioCtrl = TextEditingController(text: widget.producto.precio.toString());
+    _iconoSeleccionado = widget.producto.icono;
+  }
+  @override
+  void dispose() {
+    _nombreCtrl.dispose();
+    _stockCtrl.dispose();
+    _precioCtrl.dispose();
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF4F6F9),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF0D253F),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text('Editar Producto', style: TextStyle(color: Colors.white)),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),

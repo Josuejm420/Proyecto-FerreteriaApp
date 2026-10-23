@@ -307,3 +307,26 @@ class _EditarProductoScreenState extends State<EditarProductoScreen> {
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
+        children: [
+          // 1. Selector de ícono
+          const Text('Ícono', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: _iconos.map((ico) {
+              final sel = _iconoSeleccionado == ico;
+              return GestureDetector(
+                onTap: () => setState(() => _iconoSeleccionado = ico),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: sel ? const Color(0xFF0D253F) : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Icon(ico, color: sel ? Colors.white : const Color(0xFF0D253F)),
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 15),

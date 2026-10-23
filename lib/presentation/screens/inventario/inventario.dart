@@ -137,3 +137,16 @@ class _InventarioAppState extends State<InventarioApp> {
                     ),
                   ),
                   const SizedBox(height: 12),
+                      // 3. Encabezados
+                  const Row(
+                    children: [
+                      SizedBox(width: 58),
+                      Expanded(child: Text('Producto', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 12))),
+                      SizedBox(width: 35, child: Text('Stock', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 12))),
+                      SizedBox(width: 75, child: Text('Precio', textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 12))),
+                      SizedBox(width: 8),
+                      SizedBox(width: 65, child: Text('Estado', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 12))),
+                      SizedBox(width: 50), // Espacio para los botones de acción
+                    ],
+                  ),
+                  const Divider(),

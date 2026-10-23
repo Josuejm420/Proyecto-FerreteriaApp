@@ -15,6 +15,7 @@ import '../../presentation/screens/Clientes/clients_screen.dart';
 import '../../presentation/screens/Ventas/sales_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 import '../../presentation/widgets/section_placeholder_screen.dart';
+import 'app_icons.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -89,9 +90,13 @@ class AppRoutes {
     },
 
     // Placeholders para los demás módulos
-    usersRoles: (context) =>
-        const SectionPlaceholderScreen(title: 'Usuarios y roles', emoji: '🔐'),
-    reports: (context) =>
-        const SectionPlaceholderScreen(title: 'Reportes', emoji: '📊'),
+    usersRoles: (context) => const SectionPlaceholderScreen(
+      title: 'Usuarios y roles',
+      icon: AppIcons.usuarios,
+    ),
+    reports: (context) => const SectionPlaceholderScreen(
+      title: 'Reportes',
+      icon: AppIcons.reportes,
+    ),
   };
 }

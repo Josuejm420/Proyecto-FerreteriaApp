@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_icons.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});
@@ -24,7 +25,11 @@ class LoginHeader extends StatelessWidget {
               ),
             ],
           ),
-          child: const Text('🛠️', style: TextStyle(fontSize: 42)),
+          child: const Icon(
+            AppIcons.herramientas,
+            size: 44,
+            color: Color(0xFF1A1A1A),
+          ),
         ),
         const SizedBox(height: 20),
         const Text(

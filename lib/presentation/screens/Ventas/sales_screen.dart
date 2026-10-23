@@ -10,14 +10,13 @@ import '../Home/widgets/stat_card.dart';
 import 'sale_detail_screen.dart';
 import '../Ventas/widgets/sales_list_card.dart';
 
-/// Lista de ventas (solo consulta y anulación; no se registran facturas aquí).
+/// Lista de venta
 class SalesScreen extends StatefulWidget {
   const SalesScreen({super.key, required this.role, this.showBack = false});
 
-  /// Rol del usuario: solo el administrador puede anular facturas.
+  /// Rol del usuario
   final UserRole role;
 
-  /// true cuando se abre como pantalla aparte (con flecha para volver).
   final bool showBack;
 
   @override
@@ -43,7 +42,6 @@ class _SalesScreenState extends State<SalesScreen> {
     super.dispose();
   }
 
-  /// Facturas que coinciden con lo buscado (por comprobante o cliente).
   List<SaleModel> get _filtered {
     final query = _query.trim().toLowerCase();
     if (query.isEmpty) return _sales;
@@ -67,7 +65,7 @@ class _SalesScreenState extends State<SalesScreen> {
       ),
     );
     if (!mounted) return;
-    // Al volver, recarga por si la factura se anuló.
+
     setState(() => _sales = _repository.getAll());
   }
 

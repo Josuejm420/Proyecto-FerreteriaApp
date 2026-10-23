@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../data/models/user_role.dart';
 import '../profile/profile_screen.dart';
 import '../Ventas/sales_screen.dart';
@@ -54,6 +55,13 @@ class _HomeScreenState extends State<HomeScreen> {
             surfaceTintColor: Colors.transparent,
             indicatorColor: DarkColors.indicador,
             height: 72,
+            iconTheme: WidgetStateProperty.resolveWith((states) {
+              final selected = states.contains(WidgetState.selected);
+              return IconThemeData(
+                size: 26,
+                color: selected ? DarkColors.naranja : DarkColors.textoSuave,
+              );
+            }),
             labelTextStyle: WidgetStateProperty.resolveWith((states) {
               final selected = states.contains(WidgetState.selected);
               return TextStyle(
@@ -68,19 +76,19 @@ class _HomeScreenState extends State<HomeScreen> {
             onDestinationSelected: _onTabSelected,
             destinations: const [
               NavigationDestination(
-                icon: Text('🏠', style: TextStyle(fontSize: 22)),
+                icon: Icon(AppIcons.inicio),
                 label: 'Inicio',
               ),
               NavigationDestination(
-                icon: Text('🧾', style: TextStyle(fontSize: 22)),
+                icon: Icon(AppIcons.ventas),
                 label: 'Ventas',
               ),
               NavigationDestination(
-                icon: Text('📦', style: TextStyle(fontSize: 22)),
+                icon: Icon(AppIcons.productos),
                 label: 'Productos',
               ),
               NavigationDestination(
-                icon: Text('👤', style: TextStyle(fontSize: 22)),
+                icon: Icon(AppIcons.perfil),
                 label: 'Perfil',
               ),
             ],

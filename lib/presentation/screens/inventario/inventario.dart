@@ -92,3 +92,23 @@ class _InventarioAppState extends State<InventarioApp> {
         leading: const Icon(Icons.menu, color: Colors.white),
         title: Text(titulos[_tab], style: const TextStyle(color: Colors.white)),
       ),
+       body: _tab != 1
+          ? Center(child: Text('Pantalla de ${titulos[_tab]}', style: const TextStyle(fontSize: 18, color: Colors.grey)))
+          : Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  // 1. Buscador
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+                    child: TextField(
+                      onChanged: (v) => setState(() => _busqueda = v),
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.search, color: Colors.grey),
+                        hintText: 'Buscar producto',
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),

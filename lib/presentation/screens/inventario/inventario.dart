@@ -180,3 +180,25 @@ class _InventarioAppState extends State<InventarioApp> {
                                   ],
                                 ),
                               ),
+                              // Stock y Precio
+                              SizedBox(width: 35, child: Text('${p.stock}', textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))),
+                              SizedBox(width: 75, child: Text('C\$ ${p.precio.toStringAsFixed(2)}', textAlign: TextAlign.right, style: const TextStyle(fontSize: 12))),
+                              const SizedBox(width: 8),
+                              // Badge Estado
+                              Container(
+                                width: 65,
+                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: esCritico ? const Color(0xFFFEE2E2) : const Color(0xFFDCFCE7),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  p.estado,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: esCritico ? const Color(0xFFDC2626) : const Color(0xFF16A34A),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),

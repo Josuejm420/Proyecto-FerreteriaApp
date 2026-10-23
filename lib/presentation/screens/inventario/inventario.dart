@@ -232,3 +232,28 @@ class _InventarioAppState extends State<InventarioApp> {
                 ],
               ),
             ),
+              floatingActionButton: _tab == 1
+          ? FloatingActionButton.extended(
+              onPressed: _mostrarDialogoAgregar,
+              backgroundColor: _azul,
+              icon: const Icon(Icons.add, color: Colors.white),
+              label: const Text('Añadir Item', style: TextStyle(color: Colors.white)),
+            )
+          : null,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _tab,
+        onTap: (i) => setState(() => _tab = i),
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: _azul,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.inventory_2), label: 'Inventario'),
+          BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Facturación'),
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Reportes'),
+          BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'Más'),
+        ],
+      ),
+    );
+  }
+}

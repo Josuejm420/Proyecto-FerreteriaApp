@@ -71,7 +71,7 @@ const List<HomeModule> homeModules = [
   ),
   HomeModule(
     icon: AppIcons.usuarios,
-    label: 'Usuarios y roles',
+    label: 'Gestion de usuarios',
     color: Color(0xFF1B3B3F),
     accent: Color(0xFF22A55B),
     route: AppRoutes.usersRoles,

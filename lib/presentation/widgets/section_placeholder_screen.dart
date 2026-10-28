@@ -25,6 +25,7 @@ class SectionPlaceholderScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Icon(icon, size: 64, color: DarkColors.naranja),
             Icon(icon, size: 64, color: DarkColors.naranjaBoton),
             const SizedBox(height: 16),
             Text(

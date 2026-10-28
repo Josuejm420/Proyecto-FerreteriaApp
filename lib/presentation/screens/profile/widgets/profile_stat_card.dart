@@ -5,12 +5,12 @@ import '../../../../core/constants/app_colors.dart';
 class ProfileStatCard extends StatelessWidget {
   const ProfileStatCard({
     super.key,
-    required this.emoji,
+    required this.icon,
     required this.label,
     required this.value,
   });
 
-  final String emoji;
+  final IconData icon;
   final String label;
   final String value;
 
@@ -32,7 +32,7 @@ class ProfileStatCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(emoji, style: const TextStyle(fontSize: 15)),
+              Icon(icon, color: const Color(0xFFD6DCF0), size: 18),
               const SizedBox(width: 6),
               Flexible(
                 child: Text(

@@ -16,7 +16,7 @@ import '../../presentation/screens/Clientes/clients_screen.dart';
 import '../../presentation/screens/Ventas/sales_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 import '../../presentation/widgets/section_placeholder_screen.dart';
-import 'app_icons.dart';
+
 
 class AppRoutes {
   AppRoutes._();

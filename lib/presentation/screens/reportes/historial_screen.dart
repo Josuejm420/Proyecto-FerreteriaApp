@@ -302,7 +302,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: _amarillo.withOpacity(0.2),
+                    color: _amarillo.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -369,7 +369,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.12),
+        color: Colors.green.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -532,7 +532,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
       borderRadius: BorderRadius.circular(16),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.06),
+          color: Colors.black.withValues(alpha: 0.06),
           blurRadius: 10,
           offset: const Offset(0, 4),
         ),

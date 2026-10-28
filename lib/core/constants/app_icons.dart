@@ -27,7 +27,9 @@ class AppIcons {
   // Estado de facturas y compras
   static const IconData anular = Icons.block_outlined;
   static const IconData vigente = Icons.check_circle_outline;
+  static const IconData advertencia = Icons.warning_amber_outlined;
 
+  // Decoración de Home y Login
   // Decoración de Home
   static const IconData herramientas = Icons.handyman_outlined; // encabezado
   static const IconData llave = Icons.build_outlined; // llave grande de bienvenida
@@ -42,4 +44,8 @@ class AppIcons {
   static const IconData permisos = Icons.shield_outlined;
   static const IconData candado = Icons.lock_outline;
   static const IconData siguiente = Icons.chevron_right;
+
+  // Catálogos
+  static const IconData categoria = Icons.sell_outlined; // etiqueta
+  static const IconData presentacion = Icons.straighten_outlined; // regla
 }

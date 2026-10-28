@@ -6,11 +6,11 @@ class SectionPlaceholderScreen extends StatelessWidget {
   const SectionPlaceholderScreen({
     super.key,
     required this.title,
-    required this.emoji,
+    required this.icon,
   });
 
   final String title;
-  final String emoji;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class SectionPlaceholderScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 64)),
+            Icon(icon, size: 64, color: DarkColors.naranja),
             const SizedBox(height: 16),
             Text(
               title,

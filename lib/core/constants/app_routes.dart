@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'app_icons.dart';
 import '../../data/models/products_model.dart';
 import '../../data/models/user_role.dart';
 import '../../presentation/screens/Home/home_screen.dart';
@@ -89,9 +90,13 @@ class AppRoutes {
     },
 
     // Placeholders para los demás módulos
-    usersRoles: (context) =>
-        const SectionPlaceholderScreen(title: 'Usuarios y roles', emoji: '🔐'),
-    reports: (context) =>
-        const SectionPlaceholderScreen(title: 'Reportes', emoji: '📊'),
+    usersRoles: (context) => const SectionPlaceholderScreen(
+      title: 'Usuarios y roles',
+      icon: AppIcons.usuarios,
+    ),
+    reports: (context) => const SectionPlaceholderScreen(
+      title: 'Reportes',
+      icon: AppIcons.reportes,
+    ),
   };
 }

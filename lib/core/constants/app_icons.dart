@@ -58,4 +58,9 @@ class AppIcons {
   // Catálogos
   static const IconData categoria = Icons.sell_outlined; // etiqueta
   static const IconData presentacion = Icons.straighten_outlined; // regla
+
+    // Reportes
+  static const IconData trofeo = Icons.emoji_events_outlined;
+  static const IconData promedio = Icons.analytics_outlined;
+  static const IconData graficoSemanal = Icons.bar_chart_outlined;
 }

@@ -18,7 +18,6 @@ import '../../presentation/screens/user_management/user_management_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 import '../../presentation/widgets/section_placeholder_screen.dart';
 
-
 class AppRoutes {
   AppRoutes._();
 
@@ -95,12 +94,6 @@ class AppRoutes {
     usersRoles: (context) => const UserManagementScreen(showBack: true),
 
     // Placeholders para los demás módulos
-    reports: (context) =>
-        const SectionPlaceholderScreen(title: 'Reportes', emoji: '📊'),
-    usersRoles: (context) => const SectionPlaceholderScreen(
-      title: 'Usuarios y roles',
-      icon: AppIcons.usuarios,
-    ),
     reports: (context) => const SectionPlaceholderScreen(
       title: 'Reportes',
       icon: AppIcons.reportes,

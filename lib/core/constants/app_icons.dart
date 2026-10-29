@@ -45,14 +45,14 @@ class AppIcons {
   static const IconData calendario = Icons.calendar_today_outlined;
   static const IconData visibilidad = Icons.visibility_outlined;
   static const IconData ocultar = Icons.visibility_off_outlined;
-}
+
   // Perfil
   static const IconData dinero = Icons.payments_outlined; // total vendido
   static const IconData cuenta = Icons.manage_accounts_outlined; // "Mi cuenta"
   static const IconData datos = Icons.assignment_outlined; // "Mis datos"
   static const IconData editar = Icons.edit_outlined;
   static const IconData contrasena = Icons.key_outlined;
-  static const IconData permisos = Icons.shield_outlined;
+  static const IconData permisosPerfil = Icons.shield_outlined;
   static const IconData candado = Icons.lock_outline;
   static const IconData siguiente = Icons.chevron_right;
 

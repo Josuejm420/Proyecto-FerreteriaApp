@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'app_icons.dart';
 import '../../data/models/products_model.dart';
 import '../../data/models/user_role.dart';
 import '../../presentation/screens/Home/home_screen.dart';
@@ -16,8 +15,7 @@ import '../../presentation/screens/Clientes/clients_screen.dart';
 import '../../presentation/screens/Ventas/sales_screen.dart';
 import '../../presentation/screens/user_management/user_management_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
-import '../../presentation/widgets/section_placeholder_screen.dart';
-
+import '../../presentation/screens/reportes/reportes_screen.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -94,16 +92,7 @@ class AppRoutes {
     // Módulo de Gestión de usuarios (solo Administrador, ver home_module.dart)
     usersRoles: (context) => const UserManagementScreen(showBack: true),
 
-    // Placeholders para los demás módulos
-    reports: (context) =>
-        const SectionPlaceholderScreen(title: 'Reportes', emoji: '📊'),
-    usersRoles: (context) => const SectionPlaceholderScreen(
-      title: 'Usuarios y roles',
-      icon: AppIcons.usuarios,
-    ),
-    reports: (context) => const SectionPlaceholderScreen(
-      title: 'Reportes',
-      icon: AppIcons.reportes,
-    ),
+    // Módulo de Reportes
+    reports: (context) => const Reportesscreen(),
   };
 }

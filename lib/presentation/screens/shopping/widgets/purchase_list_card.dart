@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_icons.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../data/models/purchase_model.dart';
 import 'purchase_status_chip.dart';
@@ -46,7 +47,7 @@ class PurchaseListCard extends StatelessWidget {
                           color: iconBackground,
                           borderRadius: BorderRadius.circular(18),
                         ),
-                        child: const Text('🚚', style: TextStyle(fontSize: 26)),
+                        child: Icon(AppIcons.compras, color: accent, size: 28),
                       ),
                       const SizedBox(width: 14),
                       Expanded(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_icons.dart';
 
 class ProductImageBanner extends StatelessWidget {
   const ProductImageBanner({super.key});
@@ -20,7 +21,11 @@ class ProductImageBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: DarkColors.borde),
       ),
-      child: const Text('📦', style: TextStyle(fontSize: 64)),
+      child: const Icon(
+        AppIcons.productos,
+        size: 72,
+        color: DarkColors.naranjaBoton,
+      ),
     );
   }
 }

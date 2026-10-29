@@ -30,6 +30,17 @@ class AppIcons {
 
   // Decoración de Home
   static const IconData herramientas = Icons.handyman_outlined; // encabezado
-  static const IconData llave = Icons.build_outlined; // llave grande de bienvenida
+  static const IconData llave =
+      Icons.build_outlined; // llave grande de bienvenida
   static const IconData saludo = Icons.waving_hand_outlined; // "Bienvenido"
+
+  // Gestión de usuarios
+  static const IconData usuarioNuevo = Icons.person_add_alt_outlined;
+  static const IconData rol = Icons.badge_outlined;
+  static const IconData permisos = Icons.security_outlined;
+  static const IconData correo = Icons.mail_outline;
+  static const IconData ubicacion = Icons.location_on_outlined;
+  static const IconData calendario = Icons.calendar_today_outlined;
+  static const IconData visibilidad = Icons.visibility_outlined;
+  static const IconData ocultar = Icons.visibility_off_outlined;
 }

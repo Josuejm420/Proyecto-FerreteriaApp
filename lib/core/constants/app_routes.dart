@@ -13,6 +13,7 @@ import '../../presentation/screens/shopping/purchases_screen.dart';
 import '../../presentation/screens/suppliers/suppliers_screen.dart';
 import '../../presentation/screens/Clientes/clients_screen.dart';
 import '../../presentation/screens/Ventas/sales_screen.dart';
+import '../../presentation/screens/user_management/user_management_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 import '../../presentation/widgets/section_placeholder_screen.dart';
 
@@ -88,9 +89,10 @@ class AppRoutes {
       return SalesScreen(role: role, showBack: true);
     },
 
+    // Módulo de Gestión de usuarios (solo Administrador, ver home_module.dart)
+    usersRoles: (context) => const UserManagementScreen(showBack: true),
+
     // Placeholders para los demás módulos
-    usersRoles: (context) =>
-        const SectionPlaceholderScreen(title: 'Usuarios y roles', emoji: '🔐'),
     reports: (context) =>
         const SectionPlaceholderScreen(title: 'Reportes', emoji: '📊'),
   };

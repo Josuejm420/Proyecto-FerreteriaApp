@@ -9,11 +9,10 @@ import '../../widgets/screen_title_bar.dart';
 import 'client_form_screen.dart';
 import 'widgets/clients_list_card.dart';
 
-/// Lista de clientes con buscador.
+/// lista de clientes con su buscador.
 class ClientsScreen extends StatefulWidget {
   const ClientsScreen({super.key, this.showBack = false});
 
-  /// true cuando se abre como pantalla aparte (con flecha para volver).
   final bool showBack;
 
   @override
@@ -39,7 +38,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
     super.dispose();
   }
 
-  /// Clientes que coinciden con lo buscado (por nombre o documento).
   List<ClientModel> get _filtered {
     final query = _query.trim().toLowerCase();
     if (query.isEmpty) return _clients;

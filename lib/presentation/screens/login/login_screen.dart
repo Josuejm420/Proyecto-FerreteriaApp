@@ -3,13 +3,11 @@ import 'package:flutter/services.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
-import '../../../data/models/user_role.dart';
 import '../../../services/auth_service.dart';
 import '../../widgets/primary_button.dart';
 import 'login_validators.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_text_field.dart';
-import 'widgets/role_selector.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -27,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordFocus = FocusNode();
   final _authService = AuthService();
 
-  UserRole _selectedRole = UserRole.administrador;
   bool _obscurePassword = true;
   bool _isLoading = false;
 
@@ -58,7 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
-    final authenticated = await _authService.login(
+    // El rol sale de la cuenta que inicia sesión (null = credenciales malas).
+    final role = await _authService.login(
       _emailController.text,
       _passwordController.text,
       _selectedRole,
@@ -67,11 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    if (authenticated) {
+    if (role != null) {
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.home,
-        arguments: _selectedRole,
+        arguments: role,
       );
     } else {
       _showMessage('Correo o contraseña incorrectos');
@@ -194,14 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: _togglePasswordVisibility,
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Entrar como (demo)',
-              style: TextStyle(color: DarkColors.textoSuave, fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-            RoleSelector(selected: _selectedRole, onChanged: _onRoleChanged),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             PrimaryButton(
               text: 'Iniciar sesión',
               isLoading: _isLoading,

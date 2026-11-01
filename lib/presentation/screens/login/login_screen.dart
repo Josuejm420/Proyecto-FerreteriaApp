@@ -44,7 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onRoleChanged(UserRole role) {
-    setState(() => _selectedRole = role);
+    setState(() {
+      _selectedRole = role;
+      _emailController.text = role.demoEmail;
+      _emailController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _emailController.text.length),
+      );
+    });
   }
 
   Future<void> _onLogin() async {
@@ -55,6 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final authenticated = await _authService.login(
       _emailController.text,
       _passwordController.text,
+      _selectedRole,
     );
 
     if (!mounted) return;

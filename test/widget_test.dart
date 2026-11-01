@@ -48,6 +48,35 @@ void main() {
     expect(find.byType(NavigationBar), findsOneWidget);
   });
 
+  testWidgets('employee demo role authenticates with employee credentials', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const FerreteriaApp());
+
+    await tester.tap(find.text('Empleado'));
+    await tester.pump();
+
+    expect(
+      tester
+          .widget<TextFormField>(find.byType(TextFormField).first)
+          .controller
+          ?.text,
+      'juan@dontono.com',
+    );
+
+    await tester.ensureVisible(find.text('Iniciar sesión'));
+    await tester.tap(find.text('Iniciar sesión'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HomeScreen), findsOneWidget);
+    expect(find.text('Juan Pérez'), findsOneWidget);
+  });
+
   testWidgets('profile route is registered', (tester) async {
     await tester.pumpWidget(const FerreteriaApp());
 

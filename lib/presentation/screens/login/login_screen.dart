@@ -40,6 +40,16 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _obscurePassword = !_obscurePassword);
   }
 
+  void _onRoleChanged(UserRole role) {
+    setState(() {
+      _selectedRole = role;
+      _emailController.text = role.demoEmail;
+      _emailController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _emailController.text.length),
+      );
+    });
+  }
+
   Future<void> _onLogin() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
@@ -49,6 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final role = await _authService.login(
       _emailController.text,
       _passwordController.text,
+      _selectedRole,
     );
 
     if (!mounted) return;

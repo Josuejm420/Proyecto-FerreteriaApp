@@ -16,7 +16,7 @@ class ClientsValidators {
     return null;
   }
 
-  /// El correo es opcional, pero si se escribe debe ser válido.
+  /// el correo lo tenemos opcional pero si se escribe debe ser válido.
   static String? correo(String? value) {
     final text = value?.trim() ?? '';
     if (text.isEmpty) return null;

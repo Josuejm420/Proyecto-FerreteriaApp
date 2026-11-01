@@ -52,6 +52,7 @@ class AppIcons {
   static const IconData datos = Icons.assignment_outlined; // "Mis datos"
   static const IconData editar = Icons.edit_outlined;
   static const IconData contrasena = Icons.key_outlined;
+  static const IconData permisosPerfil = Icons.shield_outlined;
   static const IconData candado = Icons.lock_outline;
   static const IconData siguiente = Icons.chevron_right;
 

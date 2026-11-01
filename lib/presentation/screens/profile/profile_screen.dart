@@ -13,11 +13,7 @@ import 'widgets/profile_title_bar.dart';
 import 'widgets/section_title.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({
-    super.key,
-    required this.userName,
-    required this.role,
-  });
+  const ProfileScreen({super.key, required this.userName, required this.role});
 
   final String userName;
   final UserRole role;
@@ -72,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
               Row(
                 children: [
                   const Icon(
-                    AppIcons.permisos,
+                    AppIcons.permisosPerfil,
                     color: DarkColors.naranja,
                     size: 26,
                   ),
@@ -203,7 +199,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 AccountOptionTile(
-                  icon: AppIcons.permisos,
+                  icon: AppIcons.permisosPerfil,
                   iconColor: const Color(0xFF22A55B),
                   iconBackground: const Color(0xFF1B3B3F),
                   title: 'Mis permisos',
@@ -227,10 +223,7 @@ class ProfileScreen extends StatelessWidget {
             miembroDesde: _memberSince,
           ),
           const SizedBox(height: 16),
-          const DashedNotice(
-            icon: AppIcons.candado,
-            text: '$_lockedMessage.',
-          ),
+          const DashedNotice(icon: AppIcons.candado, text: '$_lockedMessage.'),
           const SizedBox(height: 16),
           FilledButton(
             onPressed: () => _onLogout(context),

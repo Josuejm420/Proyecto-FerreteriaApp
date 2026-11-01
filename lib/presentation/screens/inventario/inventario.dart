@@ -154,7 +154,7 @@ class _InventarioAppState extends State<InventarioApp> {
                   Expanded(
                     child: ListView.separated(
                       itemCount: listaFiltrada.length,
-                      separatorBuilder: (, _) => const Divider(height: 1),
+                      separatorBuilder: (_, _) => const Divider(height: 1),
                       itemBuilder: (ctx, i) {
                         final p = listaFiltrada[i];
                         final esCritico = p.estado == 'Crítico';

@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
 
-import '../../data/models/user_role.dart';
+import '../../core/errors/api_exception.dart';
 import '../../data/models/user_session.dart';
-import '../../services/auth_service.dart';
+import '../../data/repositories/auth_repository.dart';
 
 /// Estado de la sesión: quién inició sesión, si está cargando y el error.
 class AuthProvider extends ChangeNotifier {
-  AuthProvider(this._authService);
+  AuthProvider(this._repository);
 
-  final AuthService _authService;
+  final AuthRepository _repository;
 
   UserSession? _session;
   bool _isLoading = false;
@@ -26,22 +26,17 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final role = await _authService.login(correo, contrasena);
-      if (role == null) {
-        _errorMessage = 'Correo o contraseña incorrectos';
-        return false;
-      }
-
-      _session = UserSession(
-        token: 'demo-token',
-        id: role == UserRole.administrador ? 1 : 2,
-        nombre: role.demoName,
-        correo: correo.trim(),
-        rolDescripcion: role.label,
-      );
+      _session = await _repository.login(correo, contrasena);
       return true;
-    } catch (_) {
-      _errorMessage = 'El servidor respondió algo inesperado';
+    } on ApiException catch (e) {
+      _errorMessage = e.statusCode == 401
+          ? 'Correo o contraseña incorrectos'
+          : e.message;
+      return false;
+    } catch (e) {
+      // Pasa si el JSON de la API no tiene los campos que espera UserSession.
+      debugPrint('Error leyendo la respuesta del login: $e');
+      _errorMessage = 'La respuesta del servidor no tiene el formato esperado';
       return false;
     } finally {
       _isLoading = false;
@@ -50,6 +45,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void logout() {
+    _repository.logout(); // borra el token del ApiClient
     _session = null;
     notifyListeners();
   }

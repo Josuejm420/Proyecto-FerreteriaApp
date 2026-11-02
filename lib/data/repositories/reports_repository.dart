@@ -19,7 +19,7 @@ class ReportsRepository {
     final now = DateTime.now();
     final limit = now.subtract(const Duration(days: 30));
 
-    return _sales.getAll().where((sale) {
+    return _sales.getAllCached().where((sale) {
       if (sale.anulada) return false;
       return switch (period) {
         ReportPeriod.todos => true,

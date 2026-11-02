@@ -19,7 +19,7 @@ class ReportsRepository {
     final now = DateTime.now();
     final limit = now.subtract(const Duration(days: 30));
 
-    return _sales.getAll().where((sale) {
+    return _sales.getAllCached().where((sale) {
       if (sale.anulada) return false;
       return switch (period) {
         ReportPeriod.todos => true,
@@ -49,7 +49,7 @@ class ReportsRepository {
       for (final detail in sale.detalles) {
         final id = detail.productoId;
         quantity[id] = (quantity[id] ?? 0) + detail.cantidad;
-        income[id] = (income[id] ?? 0) + detail.subtotal + detail.iva;
+        income[id] = (income[id] ?? 0) + detail.subtotal + detail.totalIva;
         if (seen.add(id)) invoices[id] = (invoices[id] ?? 0) + 1;
       }
     }

@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
+import '../../../data/models/user_role.dart';
 import '../../../services/auth_service.dart';
 import '../../widgets/primary_button.dart';
 import 'login_validators.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_text_field.dart';
+import 'widgets/role_selector.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,8 +27,17 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordFocus = FocusNode();
   final _authService = AuthService();
 
+  UserRole _selectedRole = UserRole.administrador;
   bool _obscurePassword = true;
   bool _isLoading = false;
+
+  void _onRoleChanged(UserRole role) {
+    setState(() {
+      _selectedRole = role;
+      _emailController.text = role.demoEmail;
+      _passwordController.text = '12345678';
+    });
+  }
 
   @override
   void dispose() {
@@ -45,23 +56,27 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
-    // El rol sale de la cuenta que inicia sesión (null = credenciales malas).
-    final role = await _authService.login(
-      _emailController.text,
-      _passwordController.text,
-    );
-
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-
-    if (role != null) {
-      Navigator.pushReplacementNamed(
-        context,
-        AppRoutes.home,
-        arguments: role,
+    try {
+      final role = await _authService.login(
+        _emailController.text,
+        _passwordController.text,
       );
-    } else {
-      _showMessage('Correo o contraseña incorrectos');
+
+      if (!mounted) return;
+
+      if (role != null) {
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.home,
+          arguments: role,
+        );
+      } else {
+        _showMessage('Correo o contraseña incorrectos');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -182,6 +197,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 24),
+            const Text(
+              'Entrar como (demo)',
+              style: TextStyle(color: DarkColors.textoSuave, fontSize: 14),
+            ),
+            const SizedBox(height: 8),
+            RoleSelector(selected: _selectedRole, onChanged: _onRoleChanged),
+            const SizedBox(height: 16),
             PrimaryButton(
               text: 'Iniciar sesión',
               isLoading: _isLoading,

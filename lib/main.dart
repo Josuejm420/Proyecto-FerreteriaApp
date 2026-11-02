@@ -17,6 +17,8 @@ class FerreteriaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    setupServiceLocator();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthProvider>.value(value: getIt<AuthProvider>()),

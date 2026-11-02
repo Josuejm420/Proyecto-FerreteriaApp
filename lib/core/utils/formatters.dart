@@ -1,11 +1,12 @@
 /// 6325 -> "C$ 6,325.00"
 String formatMoney(double value) {
-  final parts = value.toStringAsFixed(2).split('.');
+  final parts = value.abs().toStringAsFixed(2).split('.');
   final integer = parts[0].replaceAllMapped(
     RegExp(r'\B(?=(\d{3})+(?!\d))'),
     (match) => ',',
   );
-  return 'C\$ $integer.${parts[1]}';
+  final sign = value < 0 ? '-' : '';
+  return '${sign}C\$ $integer.${parts[1]}';
 }
 
 /// DateTime(2026, 10, 10) -> "10/10/2026"

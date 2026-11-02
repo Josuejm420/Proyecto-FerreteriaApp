@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
+import '../../../data/models/user_role.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/primary_button.dart';
 import 'login_validators.dart';
@@ -25,7 +26,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController(text: '12345678');
   final _passwordFocus = FocusNode();
 
+  UserRole _selectedRole = UserRole.administrador;
   bool _obscurePassword = true;
+
+  void _onRoleChanged(UserRole role) {
+    setState(() {
+      _selectedRole = role;
+      _emailController.text = role.demoEmail;
+      _passwordController.text = '12345678';
+    });
+  }
 
   @override
   void dispose() {
@@ -52,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (success) {
-      // El rol viene de la API (según la cuenta que inició sesión).
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.home,
@@ -180,6 +189,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 24),
+            const Text(
+              'Entrar como (demo)',
+              style: TextStyle(color: DarkColors.textoSuave, fontSize: 14),
+            ),
+            const SizedBox(height: 8),
+            RoleSelector(selected: _selectedRole, onChanged: _onRoleChanged),
+            const SizedBox(height: 16),
             PrimaryButton(
               text: 'Iniciar sesión',
               isLoading: context.select<AuthProvider, bool>(
@@ -190,6 +206,84 @@ class _LoginScreenState extends State<LoginScreen> {
               foregroundColor: const Color(0xFF1A1A1A),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class RoleSelector extends StatelessWidget {
+  const RoleSelector({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final UserRole selected;
+  final ValueChanged<UserRole> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _RoleOption(
+            label: UserRole.administrador.label,
+            isSelected: selected == UserRole.administrador,
+            onTap: () => onChanged(UserRole.administrador),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _RoleOption(
+            label: UserRole.empleado.label,
+            isSelected: selected == UserRole.empleado,
+            onTap: () => onChanged(UserRole.empleado),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RoleOption extends StatelessWidget {
+  const _RoleOption({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isSelected
+        ? DarkColors.naranjaBoton
+        : Colors.white.withValues(alpha: 0.06);
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: onTap,
+      child: Container(
+        height: 46,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected
+                ? DarkColors.naranjaBoton
+                : Colors.white.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? const Color(0xFF1A1A1A) : Colors.white,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );

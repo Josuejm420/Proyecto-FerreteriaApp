@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
 
-import '../../core/errors/api_exception.dart';
+import '../../data/models/user_role.dart';
 import '../../data/models/user_session.dart';
-import '../../data/repositories/auth_repository.dart';
+import '../../services/auth_service.dart';
 
 /// Estado de la sesión: quién inició sesión, si está cargando y el error.
 class AuthProvider extends ChangeNotifier {
-  AuthProvider(this._repository);
+  AuthProvider(this._authService);
 
-  final AuthRepository _repository;
+  final AuthService _authService;
 
   UserSession? _session;
   bool _isLoading = false;
@@ -26,13 +26,20 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _session = await _repository.login(correo, contrasena);
+      final role = await _authService.login(correo, contrasena);
+      if (role == null) {
+        _errorMessage = 'Correo o contraseña incorrectos';
+        return false;
+      }
+
+      _session = UserSession(
+        token: 'demo-token',
+        id: role == UserRole.administrador ? 1 : 2,
+        nombre: role.demoName,
+        correo: correo.trim(),
+        rolDescripcion: role.label,
+      );
       return true;
-    } on ApiException catch (e) {
-      _errorMessage = e.isUnauthorized
-          ? 'Correo o contraseña incorrectos'
-          : e.message;
-      return false;
     } catch (_) {
       _errorMessage = 'El servidor respondió algo inesperado';
       return false;
@@ -43,7 +50,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void logout() {
-    _repository.logout();
     _session = null;
     notifyListeners();
   }

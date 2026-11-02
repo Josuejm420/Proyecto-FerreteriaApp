@@ -29,14 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
   UserRole _selectedRole = UserRole.administrador;
   bool _obscurePassword = true;
 
-  void _onRoleChanged(UserRole role) {
-    setState(() {
-      _selectedRole = role;
-      _emailController.text = role.demoEmail;
-      _passwordController.text = '12345678';
-    });
-  }
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -47,6 +39,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _togglePasswordVisibility() {
     setState(() => _obscurePassword = !_obscurePassword);
+  }
+
+  void _onRoleChanged(UserRole role) {
+    setState(() {
+      _selectedRole = role;
+      _emailController.text = role.demoEmail;
+      _emailController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _emailController.text.length),
+      );
+      _passwordController.text = '12345678';
+    });
   }
 
   Future<void> _onLogin() async {
@@ -124,7 +127,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         children: [
                           const LoginHeader(),
-                          const SizedBox(height: 28),
+                          const SizedBox(height: 20),
+                          RoleSelector(
+                            selected: _selectedRole,
+                            onChanged: _onRoleChanged,
+                          ),
+                          const SizedBox(height: 20),
                           _buildFormCard(),
                         ],
                       ),

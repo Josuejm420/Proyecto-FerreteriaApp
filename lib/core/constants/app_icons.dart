@@ -29,7 +29,6 @@ class AppIcons {
   static const IconData vigente = Icons.check_circle_outline;
   static const IconData advertencia = Icons.warning_amber_outlined;
 
-  // Decoración de Home y Login
   // Decoración de Home
   static const IconData herramientas = Icons.handyman_outlined; // encabezado
   static const IconData llave =

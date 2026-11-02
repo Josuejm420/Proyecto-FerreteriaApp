@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../data/models/user_role.dart';
-import '../../../services/auth_service.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/primary_button.dart';
 import 'login_validators.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_text_field.dart';
-import 'widgets/role_selector.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,11 +25,17 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController(text: 'antonio@dontono.com');
   final _passwordController = TextEditingController(text: '12345678');
   final _passwordFocus = FocusNode();
-  final _authService = AuthService();
 
   UserRole _selectedRole = UserRole.administrador;
   bool _obscurePassword = true;
-  bool _isLoading = false;
+
+  void _onRoleChanged(UserRole role) {
+    setState(() {
+      _selectedRole = role;
+      _emailController.text = role.demoEmail;
+      _passwordController.text = '12345678';
+    });
+  }
 
   @override
   void dispose() {
@@ -43,38 +49,26 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _obscurePassword = !_obscurePassword);
   }
 
-  void _onRoleChanged(UserRole role) {
-    setState(() {
-      _selectedRole = role;
-      _emailController.text = role.demoEmail;
-      _emailController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _emailController.text.length),
-      );
-    });
-  }
-
   Future<void> _onLogin() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
-    // El rol sale de la cuenta que inicia sesión (null = credenciales malas).
-    final role = await _authService.login(
+    final auth = context.read<AuthProvider>();
+    final success = await auth.login(
       _emailController.text,
       _passwordController.text,
     );
 
     if (!mounted) return;
-    setState(() => _isLoading = false);
 
-    if (role != null) {
+    if (success) {
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.home,
-        arguments: role,
+        arguments: auth.session!.role,
       );
     } else {
-      _showMessage('Correo o contraseña incorrectos');
+      _showMessage(auth.errorMessage ?? 'No se pudo iniciar sesión');
     }
   }
 
@@ -204,12 +198,92 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 16),
             PrimaryButton(
               text: 'Iniciar sesión',
-              isLoading: _isLoading,
+              isLoading: context.select<AuthProvider, bool>(
+                (provider) => provider.isLoading,
+              ),
               onPressed: _onLogin,
               backgroundColor: DarkColors.naranjaBoton,
               foregroundColor: const Color(0xFF1A1A1A),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class RoleSelector extends StatelessWidget {
+  const RoleSelector({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final UserRole selected;
+  final ValueChanged<UserRole> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _RoleOption(
+            label: UserRole.administrador.label,
+            isSelected: selected == UserRole.administrador,
+            onTap: () => onChanged(UserRole.administrador),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _RoleOption(
+            label: UserRole.empleado.label,
+            isSelected: selected == UserRole.empleado,
+            onTap: () => onChanged(UserRole.empleado),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RoleOption extends StatelessWidget {
+  const _RoleOption({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isSelected
+        ? DarkColors.naranjaBoton
+        : Colors.white.withValues(alpha: 0.06);
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: onTap,
+      child: Container(
+        height: 46,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected
+                ? DarkColors.naranjaBoton
+                : Colors.white.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? const Color(0xFF1A1A1A) : Colors.white,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );

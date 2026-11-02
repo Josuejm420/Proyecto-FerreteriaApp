@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
+import '../../../data/models/user_role.dart';
 import '../../../services/auth_service.dart';
 import '../../widgets/primary_button.dart';
 import 'login_validators.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_text_field.dart';
+import 'widgets/role_selector.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordFocus = FocusNode();
   final _authService = AuthService();
 
+  UserRole _selectedRole = UserRole.administrador;
   bool _obscurePassword = true;
   bool _isLoading = false;
 
@@ -59,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final role = await _authService.login(
       _emailController.text,
       _passwordController.text,
-      _selectedRole,
     );
 
     if (!mounted) return;
@@ -193,6 +195,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 24),
+            const Text(
+              'Entrar como (demo)',
+              style: TextStyle(color: DarkColors.textoSuave, fontSize: 14),
+            ),
+            const SizedBox(height: 8),
+            RoleSelector(selected: _selectedRole, onChanged: _onRoleChanged),
+            const SizedBox(height: 16),
             PrimaryButton(
               text: 'Iniciar sesión',
               isLoading: _isLoading,

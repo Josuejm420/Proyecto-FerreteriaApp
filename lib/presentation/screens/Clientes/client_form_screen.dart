@@ -1,14 +1,14 @@
-import 'package:app_ferreteria/presentation/screens/Clientes/clients_validator.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/errors/api_exception.dart';
 import '../../../data/models/client_model.dart';
 import '../../../data/repositories/clients_repository.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/screen_title_bar.dart';
+import 'clients_validator.dart';
 
-/// formulario para crear o editar un cliente.
 class ClientFormScreen extends StatefulWidget {
   const ClientFormScreen({super.key, this.client});
 
@@ -51,7 +51,6 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
     super.dispose();
   }
 
-  // --- Eventos ---
   void _onActiveChanged(bool? value) => setState(() => _activo = value ?? true);
 
   Future<void> _onSave() async {
@@ -70,11 +69,32 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
       activo: _activo,
     );
 
-    final saved = await ClientsRepository.instance.save(client);
+    try {
+      final saved = await ClientsRepository.instance.save(client);
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      Navigator.pop(context, saved);
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showError(e.message);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showError('No se pudo guardar el cliente en el servidor');
+    }
+  }
 
-    if (!mounted) return;
-    setState(() => _isSaving = false);
-    Navigator.pop(context, saved); // devuelve el cliente guardado
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: DarkColors.rojo,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
   }
 
   @override
@@ -152,13 +172,11 @@ class _ClientFormScreenState extends State<ClientFormScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
                   PrimaryButton(
-                    text: 'Guardar',
+                    text: _isEditing ? 'Guardar cambios' : 'Crear cliente',
                     isLoading: _isSaving,
                     onPressed: _onSave,
-                    backgroundColor: DarkColors.naranjaBoton,
-                    foregroundColor: const Color(0xFF1A1A1A),
                   ),
                 ],
               ),

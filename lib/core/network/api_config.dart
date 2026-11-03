@@ -11,7 +11,7 @@ class ApiConfig {
   ///   - Simulador de iOS     -> http://localhost:PUERTO/api
   static const String baseUrl = String.fromEnvironment(
     'API_URL',
-    defaultValue: 'http://10.0.2.2:3000/api',
+    defaultValue: 'https://xn--apidontoo-exc8brhqcbdua6cr-orc.canadacentral-01.azurewebsites.net/api',
   );
 
   /// Tiempo máximo de espera por cada petición.

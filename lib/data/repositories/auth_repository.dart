@@ -7,15 +7,16 @@ class AuthRepository {
 
   final ApiClient _api;
 
-  /// SUPOSICIÓN: POST /auth/login con { "correo": ..., "contrasena": ... }
+  /// POST /api/login/IniciarSesion  ->  { "token": "..." }
   Future<UserSession> login(String correo, String contrasena) async {
     final data = await _api.post(
-      '/auth/login',
-      body: {'correo': correo.trim(), 'contrasena': contrasena},
+      '/login/IniciarSesion',
+      body: {'correo': correo.trim(), 'contraseña': contrasena},
     );
 
-    final session = UserSession.fromJson(data as Map<String, dynamic>);
-    _api.setToken(session.token); // desde aquí todas las peticiones lo llevan
+    final token = (data as Map<String, dynamic>)['token'] as String;
+    final session = UserSession.fromToken(token);
+    _api.setToken(token); // desde aquí todas las peticiones llevan el token
     return session;
   }
 

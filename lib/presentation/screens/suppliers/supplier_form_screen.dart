@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/di/service_locator.dart';
+import '../../../core/errors/api_exception.dart';
 import '../../../data/models/supplier_model.dart';
 import '../../../data/repositories/suppliers_repository.dart';
 import '../../widgets/primary_button.dart';
@@ -55,6 +57,18 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
   // --- Eventos ---
   void _onActiveChanged(bool? value) => setState(() => _activo = value ?? true);
 
+  void _showError(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(text),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
+
   Future<void> _onSave() async {
     FocusScope.of(context).unfocus();
 
@@ -71,11 +85,19 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
       activo: _activo,
     );
 
-    final saved = await SuppliersRepository.instance.save(supplier);
-
-    if (!mounted) return;
-    setState(() => _isSaving = false);
-    Navigator.pop(context, saved); // devuelve el proveedor guardado
+    try {
+      final saved = await getIt<SuppliersRepository>().save(supplier);
+      if (!mounted) return;
+      Navigator.pop(context, saved); // devuelve el proveedor guardado
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showError(e.message);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showError('No se pudo guardar el proveedor');
+    }
   }
 
   @override

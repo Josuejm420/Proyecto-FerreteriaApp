@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app_ferreteria/main.dart';
 import 'package:app_ferreteria/core/constants/app_routes.dart';
-import 'package:app_ferreteria/data/models/products_model.dart';
+import 'package:app_ferreteria/data/models/presentation_model.dart';
 import 'package:app_ferreteria/data/models/user_role.dart';
 import 'package:app_ferreteria/presentation/screens/Home/home_screen.dart';
 import 'package:app_ferreteria/presentation/screens/login/login_screen.dart';
@@ -177,7 +177,7 @@ void main() {
     await tester.tap(find.text('Pinturas').last);
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byType(DropdownButtonFormField<ProductPresentation>).first,
+      find.byType(DropdownButtonFormField<PresentationModel>).first,
     );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Unidad (unidad)').last);

@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/categories_repository.dart';
 import '../../data/repositories/presentations_repository.dart';
+import '../../data/repositories/products_repository.dart';
 import '../../data/repositories/suppliers_repository.dart';
 import '../../presentation/providers/auth_provider.dart';
 import '../network/api_client.dart';
@@ -33,15 +34,25 @@ void setupServiceLocator() {
     );
   }
 
+  if (!getIt.isRegistered<SuppliersRepository>()) {
+    getIt.registerLazySingleton<SuppliersRepository>(
+      () => SuppliersRepository(getIt<ApiClient>()),
+    );
+  }
+
   if (!getIt.isRegistered<PresentationsRepository>()) {
     getIt.registerLazySingleton<PresentationsRepository>(
       () => PresentationsRepository(getIt<ApiClient>()),
     );
   }
 
-  if (!getIt.isRegistered<SuppliersRepository>()) {
-    getIt.registerLazySingleton<SuppliersRepository>(
-      () => SuppliersRepository(getIt<ApiClient>()),
+  if (!getIt.isRegistered<ProductsRepository>()) {
+    getIt.registerLazySingleton<ProductsRepository>(
+      () => ProductsRepository(
+        getIt<ApiClient>(),
+        getIt<CategoriesRepository>(),
+        getIt<PresentationsRepository>(),
+      ),
     );
   }
 }

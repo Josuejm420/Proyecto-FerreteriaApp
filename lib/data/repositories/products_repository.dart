@@ -1,106 +1,71 @@
+import '../../core/network/api_client.dart';
+import '../models/category_model.dart';
+import '../models/presentation_model.dart';
 import '../models/products_model.dart';
+import 'categories_repository.dart';
+import 'presentations_repository.dart';
 
-/// Repositorio de productos en memoria (datos de ejemplo).
-/// Cuando tengas API, solo cambias el interior de estos métodos.
+/// Categorías y presentaciones disponibles para elegir en el formulario.
+class ProductCatalogs {
+  const ProductCatalogs({required this.categories, required this.presentations});
+
+  final List<CategoryModel> categories;
+  final List<PresentationModel> presentations;
+}
+
+/// Productos contra la API (/api/producto).
 class ProductsRepository {
-  ProductsRepository._();
+  ProductsRepository(
+    this._api,
+    this._categoriesRepository,
+    this._presentationsRepository,
+  );
 
-  static final ProductsRepository instance = ProductsRepository._();
+  final ApiClient _api;
+  final CategoriesRepository _categoriesRepository;
+  final PresentationsRepository _presentationsRepository;
 
-  static const List<String> categorias = [
-    'Herramientas eléctricas',
-    'Herramientas manuales',
-    'Construcción',
-    'Pinturas',
-    'Plomería',
-  ];
+  Future<ProductCatalogs> loadCatalogs() async {
+    final categories = await _categoriesRepository.getAll();
+    final presentations = await _presentationsRepository.getAll();
+    return ProductCatalogs(categories: categories, presentations: presentations);
+  }
 
-  static const List<ProductPresentation> presentaciones = [
-    ProductPresentation('Unidad', 'unidad'),
-    ProductPresentation('Saco', 'kg'),
-    ProductPresentation('Galón', 'galón'),
-    ProductPresentation('Caja', 'caja'),
-    ProductPresentation('Metro', 'metro'),
-  ];
+  /// Productos con el nombre de su categoría y presentación ya resueltos.
+  Future<List<ProductsModel>> getAll() async {
+    final data = await _api.get('/producto');
+    final catalogs = await loadCatalogs();
 
-  int _nextId = 7;
+    final categories = {
+      for (final c in catalogs.categories)
+        if (c.id != null) c.id!: c,
+    };
+    final presentations = {
+      for (final p in catalogs.presentations)
+        if (p.id != null) p.id!: p,
+    };
 
-  final List<ProductsModel> _products = [
-    ProductsModel(
-      id: 1,
-      nombre: 'Taladro eléctrico 600W',
-      descripcion:
-          'Taladro de 600W con mandril de 13 mm para madera, metal y pared.',
-      categoria: 'Herramientas eléctricas',
-      presentacion: 'Unidad',
-      unidadMedida: 'unidad',
-      fechaRegistro: DateTime(2026, 3, 12),
-    ),
-    ProductsModel(
-      id: 2,
-      nombre: 'Cemento Canal 42.5 kg',
-      descripcion: 'Cemento gris de uso general para obra y cimientos.',
-      categoria: 'Construcción',
-      presentacion: 'Saco',
-      unidadMedida: 'kg',
-      fechaRegistro: DateTime(2026, 3, 12),
-    ),
-    ProductsModel(
-      id: 3,
-      nombre: 'Pintura látex blanca',
-      descripcion: 'Pintura látex lavable para interiores y exteriores.',
-      categoria: 'Pinturas',
-      presentacion: 'Galón',
-      unidadMedida: 'galón',
-      fechaRegistro: DateTime(2026, 3, 12),
-    ),
-    ProductsModel(
-      id: 4,
-      nombre: 'Tornillos para madera 3"',
-      descripcion: 'Tornillos de acero con cabeza plana para madera.',
-      categoria: 'Construcción',
-      presentacion: 'Caja',
-      unidadMedida: 'caja',
-      fechaRegistro: DateTime(2026, 3, 12),
-    ),
-    ProductsModel(
-      id: 5,
-      nombre: 'Martillo de uña 16 oz',
-      descripcion: 'Martillo con mango de fibra y cabeza de acero forjado.',
-      categoria: 'Herramientas manuales',
-      presentacion: 'Unidad',
-      unidadMedida: 'unidad',
-      fechaRegistro: DateTime(2026, 3, 12),
-      activo: false,
-    ),
-    ProductsModel(
-      id: 6,
-      nombre: 'Tubo PVC 1/2"',
-      descripcion: 'Tubo de PVC de media pulgada para agua potable.',
-      categoria: 'Plomería',
-      presentacion: 'Metro',
-      unidadMedida: 'metro',
-      fechaRegistro: DateTime(2026, 3, 12),
-    ),
-  ];
+    final products = (data as List)
+        .map(
+          (item) => ProductsModel.fromJson(
+            item as Map<String, dynamic>,
+            categories: categories,
+            presentations: presentations,
+          ),
+        )
+        .toList();
 
-  List<ProductsModel> getAll() => List.unmodifiable(_products);
+    products.sort((a, b) => (b.id ?? 0).compareTo(a.id ?? 0)); // nuevos primero
+    return products;
+  }
 
   /// Crea el producto si no tiene id; si lo tiene, lo actualiza.
+  /// La API solo responde un texto, así que se devuelve el mismo producto.
   Future<ProductsModel> save(ProductsModel product) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-
     if (product.id == null) {
-      final created = product.copyWith(id: _nextId++);
-      _products.insert(0, created);
-      return created;
-    }
-
-    final index = _products.indexWhere((p) => p.id == product.id);
-    if (index == -1) {
-      _products.insert(0, product);
+      await _api.post('/producto', body: product.toJson());
     } else {
-      _products[index] = product;
+      await _api.put('/producto', body: product.toJson());
     }
     return product;
   }

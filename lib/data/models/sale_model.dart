@@ -76,12 +76,11 @@ class SaleModel {
     required this.atendio,
     this.descuento = 0,
     required this.montoPago,
-    double? montoCambio,
-    double? total,
+    this._montoCambio,
+    this._total,
     this.detalles = const [],
     this.anulada = false,
-  }) : _montoCambio = montoCambio,
-       _total = total;
+  });
 
   final int? id;
   final String numeroComprobante;

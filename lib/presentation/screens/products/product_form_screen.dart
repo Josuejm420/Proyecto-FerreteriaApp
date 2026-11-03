@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/di/service_locator.dart';
+import '../../../core/errors/api_exception.dart';
+import '../../../data/models/category_model.dart';
+import '../../../data/models/presentation_model.dart';
 import '../../../data/models/products_model.dart';
 import '../../../data/repositories/products_repository.dart';
 import '../../widgets/primary_button.dart';
@@ -24,10 +28,14 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   late final TextEditingController _nombreController;
   late final TextEditingController _descripcionController;
 
-  String? _categoria;
-  ProductPresentation? _presentacion;
+  List<CategoryModel> _categories = [];
+  List<PresentationModel> _presentations = [];
+  CategoryModel? _categoria;
+  PresentationModel? _presentacion;
   bool _activo = true;
   bool _isSaving = false;
+  bool _isLoadingCatalogs = true;
+  String? _catalogsError;
 
   bool get _isEditing => widget.product != null;
 
@@ -39,16 +47,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     _nombreController = TextEditingController(text: product?.nombre ?? '');
     _descripcionController =
         TextEditingController(text: product?.descripcion ?? '');
+    _activo = product?.activo ?? true;
 
-    if (product != null) {
-      _categoria = ProductsRepository.categorias.contains(product.categoria)
-          ? product.categoria
-          : null;
-      _presentacion = ProductsRepository.presentaciones
-          .where((p) => p.nombre == product.presentacion)
-          .firstOrNull;
-      _activo = product.activo;
-    }
+    _loadCatalogs();
   }
 
   @override
@@ -58,14 +59,72 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     super.dispose();
   }
 
-  // --- Eventos ---
-  void _onCategoryChanged(String? value) => setState(() => _categoria = value);
+  // --- Carga de categorías y presentaciones ---
+  Future<void> _loadCatalogs() async {
+    try {
+      final catalogs = await getIt<ProductsRepository>().loadCatalogs();
+      if (!mounted) return;
 
-  void _onPresentationChanged(ProductPresentation? value) {
+      final product = widget.product;
+      // Solo se ofrecen las activas, más la que ya tenga el producto.
+      final categories = catalogs.categories
+          .where((c) => c.activo || c.id == product?.categoriaId)
+          .toList();
+      final presentations = catalogs.presentations
+          .where((p) => p.activo || p.id == product?.presentacionId)
+          .toList();
+
+      setState(() {
+        _categories = categories;
+        _presentations = presentations;
+        // El selector necesita la misma instancia que está en la lista.
+        _categoria =
+            categories.where((c) => c.id == product?.categoriaId).firstOrNull;
+        _presentacion = presentations
+            .where((p) => p.id == product?.presentacionId)
+            .firstOrNull;
+        _catalogsError = null;
+      });
+    } on ApiException catch (e) {
+      if (mounted) setState(() => _catalogsError = e.message);
+    } catch (_) {
+      if (mounted) {
+        setState(() => _catalogsError = 'No se pudieron cargar los catálogos');
+      }
+    } finally {
+      if (mounted) setState(() => _isLoadingCatalogs = false);
+    }
+  }
+
+  void _onRetryCatalogs() {
+    setState(() {
+      _isLoadingCatalogs = true;
+      _catalogsError = null;
+    });
+    _loadCatalogs();
+  }
+
+  // --- Eventos ---
+  void _onCategoryChanged(CategoryModel? value) =>
+      setState(() => _categoria = value);
+
+  void _onPresentationChanged(PresentationModel? value) {
     setState(() => _presentacion = value);
   }
 
   void _onActiveChanged(bool? value) => setState(() => _activo = value ?? true);
+
+  void _showError(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(text),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
 
   Future<void> _onSave() async {
     FocusScope.of(context).unfocus();
@@ -74,10 +133,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
     final categoria = _categoria;
     final presentacion = _presentacion;
-    if (categoria == null || presentacion == null) {
-      _formKey.currentState?.validate();
-      return;
-    }
+    if (categoria == null || presentacion == null) return;
 
     setState(() => _isSaving = true);
 
@@ -87,19 +143,121 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       id: base?.id,
       nombre: _nombreController.text.trim(),
       descripcion: _descripcionController.text.trim(),
-      categoria: categoria,
+      categoriaId: categoria.id!,
+      categoria: categoria.nombre,
+      presentacionId: presentacion.id!,
       presentacion: presentacion.nombre,
-      unidadMedida: presentacion.unidad,
-      peso: base?.peso,
+      unidadMedida: presentacion.unidadMedida,
+      peso: presentacion.peso,
       fechaRegistro: base?.fechaRegistro ?? DateTime.now(),
       activo: _activo,
     );
 
-    final saved = await ProductsRepository.instance.save(product);
+    try {
+      final saved = await getIt<ProductsRepository>().save(product);
+      if (!mounted) return;
+      Navigator.pop(context, saved); // devuelve el producto guardado
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showError(e.message);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showError('No se pudo guardar el producto');
+    }
+  }
 
-    if (!mounted) return;
-    setState(() => _isSaving = false);
-    Navigator.pop(context, saved); // devuelve el producto guardado
+  Widget _buildContent() {
+    if (_isLoadingCatalogs) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 48),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_catalogsError != null) {
+      return _InfoCard(
+        message: _catalogsError!,
+        actionLabel: 'Reintentar',
+        onAction: _onRetryCatalogs,
+      );
+    }
+
+    if (_categories.isEmpty || _presentations.isEmpty) {
+      return const _InfoCard(
+        message: 'Antes de registrar productos necesitas al menos una '
+            'categoría y una presentación activas. Créalas en Catálogos.',
+      );
+    }
+
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          ProductTextField(
+            controller: _nombreController,
+            label: 'Nombre del producto',
+            hint: 'Ej. Taladro eléctrico 600W',
+            textInputAction: TextInputAction.next,
+            validator: ProductsValidators.nombre,
+          ),
+          const SizedBox(height: 16),
+          ProductTextField(
+            controller: _descripcionController,
+            label: 'Descripción',
+            hint: 'Describe el producto',
+            maxLines: 3,
+          ),
+          const SizedBox(height: 16),
+          ProductDropdown<CategoryModel>(
+            label: 'Categoría',
+            value: _categoria,
+            items: _categories,
+            itemLabel: (c) => c.nombre,
+            onChanged: _onCategoryChanged,
+            validator: ProductsValidators.categoria,
+          ),
+          const SizedBox(height: 16),
+          ProductDropdown<PresentationModel>(
+            label: 'Presentación',
+            value: _presentacion,
+            items: _presentations,
+            itemLabel: (p) => '${p.nombre} (${p.unidadMedida})',
+            onChanged: _onPresentationChanged,
+            validator: ProductsValidators.presentacion,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Text(
+                _activo ? 'Estado (activo)' : 'Estado (inactivo)',
+                style: const TextStyle(
+                  color: DarkColors.textoSuave,
+                  fontSize: 16,
+                ),
+              ),
+              const Spacer(),
+              Checkbox(
+                value: _activo,
+                onChanged: _onActiveChanged,
+                activeColor: DarkColors.checkAzul,
+                checkColor: const Color(0xFF14192E),
+                side: const BorderSide(color: DarkColors.textoSuave, width: 2),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          PrimaryButton(
+            text: 'Guardar',
+            isLoading: _isSaving,
+            onPressed: _onSave,
+            backgroundColor: DarkColors.naranjaBoton,
+            foregroundColor: const Color(0xFF1A1A1A),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -115,78 +273,49 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
               onBack: () => Navigator.pop(context),
             ),
             const SizedBox(height: 20),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  ProductTextField(
-                    controller: _nombreController,
-                    label: 'Nombre del producto',
-                    hint: 'Ej. Taladro eléctrico 600W',
-                    textInputAction: TextInputAction.next,
-                    validator: ProductsValidators.nombre,
-                  ),
-                  const SizedBox(height: 16),
-                  ProductTextField(
-                    controller: _descripcionController,
-                    label: 'Descripción',
-                    hint: 'Describe el producto',
-                    maxLines: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  ProductDropdown<String>(
-                    label: 'Categoría',
-                    value: _categoria,
-                    items: ProductsRepository.categorias,
-                    itemLabel: (c) => c,
-                    onChanged: _onCategoryChanged,
-                    validator: ProductsValidators.categoria,
-                  ),
-                  const SizedBox(height: 16),
-                  ProductDropdown<ProductPresentation>(
-                    label: 'Presentación',
-                    value: _presentacion,
-                    items: ProductsRepository.presentaciones,
-                    itemLabel: (p) => '${p.nombre} (${p.unidad})',
-                    onChanged: _onPresentationChanged,
-                    validator: ProductsValidators.presentacion,
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Text(
-                        _activo ? 'Estado (activo)' : 'Estado (inactivo)',
-                        style: const TextStyle(
-                          color: DarkColors.textoSuave,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const Spacer(),
-                      Checkbox(
-                        value: _activo,
-                        onChanged: _onActiveChanged,
-                        activeColor: DarkColors.checkAzul,
-                        checkColor: const Color(0xFF14192E),
-                        side: const BorderSide(
-                          color: DarkColors.textoSuave,
-                          width: 2,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  PrimaryButton(
-                    text: 'Guardar',
-                    isLoading: _isSaving,
-                    onPressed: _onSave,
-                    backgroundColor: DarkColors.naranjaBoton,
-                    foregroundColor: const Color(0xFF1A1A1A),
-                  ),
-                ],
-              ),
-            ),
+            _buildContent(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Tarjeta con un mensaje (y un botón opcional) para errores o avisos.
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({required this.message, this.actionLabel, this.onAction});
+
+  final String message;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: DarkColors.tarjeta,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          if (actionLabel != null) ...[
+            const SizedBox(height: 12),
+            FilledButton(
+              onPressed: onAction,
+              style: FilledButton.styleFrom(
+                backgroundColor: DarkColors.naranjaBoton,
+                foregroundColor: const Color(0xFF1A1A1A),
+              ),
+              child: Text(actionLabel!),
+            ),
+          ],
+        ],
       ),
     );
   }

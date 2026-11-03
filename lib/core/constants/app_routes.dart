@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../data/models/products_model.dart';
 import '../../data/models/user_role.dart';
+import '../../presentation/providers/auth_provider.dart';
 import '../../presentation/screens/Home/home_screen.dart';
 import '../../presentation/screens/category/catalogs_screen.dart';
 import '../../presentation/screens/login/login_screen.dart';
@@ -16,6 +18,7 @@ import '../../presentation/screens/Clientes/clients_screen.dart';
 import '../../presentation/screens/Ventas/sales_screen.dart';
 import '../../presentation/screens/user_management/user_management_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
+
 
 class AppRoutes {
   AppRoutes._();
@@ -44,14 +47,14 @@ class AppRoutes {
     root: (context) => const LoginScreen(),
     login: (context) => const LoginScreen(),
     home: (context) {
-      final arguments = ModalRoute.of(context)?.settings.arguments;
-      final role = arguments is UserRole ? arguments : UserRole.administrador;
-      return HomeScreen(userName: role.demoName, role: role);
+      final session = context.read<AuthProvider>().session;
+      if (session == null) return const LoginScreen();
+      return HomeScreen(userName: session.nombre, role: session.role);
     },
     profile: (context) {
-      final arguments = ModalRoute.of(context)?.settings.arguments;
-      final role = arguments is UserRole ? arguments : UserRole.administrador;
-      return ProfileScreen(userName: role.demoName, role: role);
+      final session = context.read<AuthProvider>().session;
+      if (session == null) return const LoginScreen();
+      return ProfileScreen(userName: session.nombre, role: session.role);
     },
     userProfile: (context) => const UserProfileScreen(),
 
@@ -84,8 +87,8 @@ class AppRoutes {
     // Módulos de Clientes y Ventas (Pantallas reales)
     clients: (context) => const ClientsScreen(showBack: true),
     sales: (context) {
-      final arguments = ModalRoute.of(context)?.settings.arguments;
-      final role = arguments is UserRole ? arguments : UserRole.administrador;
+      final role =
+          context.read<AuthProvider>().session?.role ?? UserRole.empleado;
       return SalesScreen(role: role, showBack: true);
     },
 

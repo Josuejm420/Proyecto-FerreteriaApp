@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../data/models/user_role.dart';
+import '../../providers/auth_provider.dart';
 import 'widgets/account_option_tile.dart';
 import 'widgets/dashed_notice.dart';
 import 'widgets/profile_data_card.dart';
@@ -117,6 +119,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _onLogout(BuildContext context) {
+    context.read<AuthProvider>().logout();
     Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.login,
@@ -126,6 +129,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final email = context.watch<AuthProvider>().session?.correo ?? '';
+
     return SafeArea(
       bottom: false,
       child: ListView(
@@ -136,7 +141,7 @@ class ProfileScreen extends StatelessWidget {
           ProfileHeaderCard(
             name: userName,
             role: role.label,
-            email: role.demoEmail,
+            email: email,
           ),
           const SizedBox(height: 14),
           const IntrinsicHeight(
@@ -217,7 +222,7 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 12),
           ProfileDataCard(
             nombre: userName,
-            correo: role.demoEmail,
+            correo: email,
             direccion: _address,
             estado: 'Activo',
             miembroDesde: _memberSince,

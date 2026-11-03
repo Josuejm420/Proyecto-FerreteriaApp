@@ -71,7 +71,15 @@ class ApiClient {
 
   dynamic _handle(http.Response response) {
     final text = utf8.decode(response.bodyBytes);
-    final data = text.isEmpty ? null : jsonDecode(text);
+    dynamic data;
+    if (text.isNotEmpty) {
+      try {
+        data = jsonDecode(text);
+      } on FormatException {
+        // Algunos endpoints responden texto plano al guardar correctamente.
+        data = text;
+      }
+    }
 
     if (response.statusCode >= 200 && response.statusCode < 300) return data;
 
@@ -83,6 +91,8 @@ class ApiClient {
 
   String _errorMessage(dynamic data, int statusCode) {
     // Si la API manda su propio mensaje, se usa ese.
+    if (data is String && data.trim().isNotEmpty) return data.trim();
+
     if (data is Map) {
       final message = data['message'] ?? data['mensaje'] ?? data['error'];
       if (message is String && message.isNotEmpty) return message;

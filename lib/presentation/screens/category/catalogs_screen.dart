@@ -31,8 +31,7 @@ class CatalogsScreen extends StatefulWidget {
 
 class _CatalogsScreenState extends State<CatalogsScreen> {
   final _categoriesRepository = getIt<CategoriesRepository>();
-  // Presentaciones: todavía en memoria (la API no tiene ese controlador).
-  final _presentationsRepository = PresentationsRepository.instance;
+  final _presentationsRepository = getIt<PresentationsRepository>();
   final _searchController = TextEditingController();
 
   List<CategoryModel> _categories = [];
@@ -49,8 +48,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
   @override
   void initState() {
     super.initState();
-    _presentations = _presentationsRepository.getAll();
-    _loadCategories();
+    _load();
   }
 
   @override
@@ -60,18 +58,20 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
   }
 
   // --- Carga desde la API ---
-  Future<void> _loadCategories() async {
+  Future<void> _load() async {
     try {
       final categories = await _categoriesRepository.getAll();
+      final presentations = await _presentationsRepository.getAll();
       if (!mounted) return;
       setState(() {
         _categories = categories;
+        _presentations = presentations;
         _errorMessage = null;
       });
     } on ApiException catch (e) {
       _onLoadError(e.message);
     } catch (_) {
-      _onLoadError('No se pudieron cargar las categorías');
+      _onLoadError('No se pudieron cargar los catálogos');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -80,8 +80,10 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
   void _onLoadError(String message) {
     if (!mounted) return;
     setState(() => _errorMessage = message);
-    // Si ya había categorías en pantalla, solo se avisa con un mensaje.
-    if (_categories.isNotEmpty) _showMessage(message);
+    // Si ya había datos en pantalla, solo se avisa con un mensaje.
+    if (_categories.isNotEmpty || _presentations.isNotEmpty) {
+      _showMessage(message);
+    }
   }
 
   void _onRetry() {
@@ -89,12 +91,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
       _isLoading = true;
       _errorMessage = null;
     });
-    _loadCategories();
-  }
-
-  void _reload() {
-    setState(() => _presentations = _presentationsRepository.getAll());
-    _loadCategories();
+    _load();
   }
 
   // --- Datos filtrados ---
@@ -151,7 +148,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
       ),
     );
     if (!mounted) return;
-    _reload();
+    _load();
     if (saved != null) {
       _showMessage(category == null
           ? 'Categoría creada correctamente'
@@ -168,7 +165,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
       ),
     );
     if (!mounted) return;
-    _reload();
+    _load();
     if (saved != null) {
       _showMessage(presentation == null
           ? 'Presentación creada correctamente'
@@ -268,7 +265,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
       child: Column(
         children: [
           Text(
-            _errorMessage ?? 'No se pudieron cargar las categorías',
+            _errorMessage ?? 'No se pudieron cargar los catálogos',
             textAlign: TextAlign.center,
             style: const TextStyle(color: Colors.white, fontSize: 16),
           ),
@@ -290,15 +287,13 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
   Widget build(BuildContext context) {
     final categories = _filteredCategories;
     final presentations = _filteredPresentations;
-    final showCategories = _filter != CatalogFilter.presentaciones;
-    final loadingCategories =
-        showCategories && _isLoading && _categories.isEmpty;
-    final categoriesFailed =
-        showCategories && _errorMessage != null && _categories.isEmpty;
+    final hasNoData = _categories.isEmpty && _presentations.isEmpty;
+    final isFirstLoad = _isLoading && hasNoData;
+    final hasFailed = _errorMessage != null && hasNoData;
     final isEmpty = categories.isEmpty &&
         presentations.isEmpty &&
-        !loadingCategories &&
-        !categoriesFailed;
+        !isFirstLoad &&
+        !hasFailed;
     final accents = DarkColors.acentosProducto.length;
 
     return Scaffold(
@@ -351,45 +346,50 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
                         style: const TextStyle(color: DarkColors.textoSuave),
                       ),
                     )
-                  : ListView(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
-                      children: [
-                        if (loadingCategories) _buildLoading(),
-                        if (categoriesFailed) _buildError(),
-                        if (categories.isNotEmpty) ...[
-                          const CatalogSectionTitle('Categorías'),
-                          const SizedBox(height: 12),
-                          for (final category in categories) ...[
-                            CatalogListCard(
-                              icon: AppIcons.categoria,
-                              title: category.nombre,
-                              subtitle: category.descripcion.isEmpty
-                                  ? 'Categoría'
-                                  : category.descripcion,
-                              activo: category.activo,
-                              accentIndex: (category.id ?? 0) % accents,
-                              onTap: () => _onCategoryTap(category),
-                            ),
+                  : RefreshIndicator(
+                      onRefresh: _load,
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
+                        children: [
+                          if (isFirstLoad) _buildLoading(),
+                          if (hasFailed) _buildError(),
+                          if (categories.isNotEmpty) ...[
+                            const CatalogSectionTitle('Categorías'),
                             const SizedBox(height: 12),
+                            for (final category in categories) ...[
+                              CatalogListCard(
+                                icon: AppIcons.categoria,
+                                title: category.nombre,
+                                subtitle: category.descripcion.isEmpty
+                                    ? 'Categoría'
+                                    : category.descripcion,
+                                activo: category.activo,
+                                accentIndex: (category.id ?? 0) % accents,
+                                onTap: () => _onCategoryTap(category),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
+                          ],
+                          if (presentations.isNotEmpty) ...[
+                            if (categories.isNotEmpty) const SizedBox(height: 8),
+                            const CatalogSectionTitle('Presentaciones'),
+                            const SizedBox(height: 12),
+                            for (final presentation in presentations) ...[
+                              CatalogListCard(
+                                icon: AppIcons.presentacion,
+                                title: presentation.nombre,
+                                subtitle: presentation.resumen,
+                                activo: presentation.activo,
+                                accentIndex:
+                                    ((presentation.id ?? 0) + 2) % accents,
+                                onTap: () => _onPresentationTap(presentation),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
                           ],
                         ],
-                        if (presentations.isNotEmpty) ...[
-                          if (categories.isNotEmpty) const SizedBox(height: 8),
-                          const CatalogSectionTitle('Presentaciones'),
-                          const SizedBox(height: 12),
-                          for (final presentation in presentations) ...[
-                            CatalogListCard(
-                              icon: AppIcons.presentacion,
-                              title: presentation.nombre,
-                              subtitle: presentation.resumen,
-                              activo: presentation.activo,
-                              accentIndex: ((presentation.id ?? 0) + 2) % accents,
-                              onTap: () => _onPresentationTap(presentation),
-                            ),
-                            const SizedBox(height: 12),
-                          ],
-                        ],
-                      ],
+                      ),
                     ),
             ),
           ],

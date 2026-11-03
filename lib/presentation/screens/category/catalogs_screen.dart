@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
+import '../../../core/di/service_locator.dart';
+import '../../../core/errors/api_exception.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/models/presentation_model.dart';
+import '../../../data/models/user_role.dart';
 import '../../../data/repositories/categories_repository.dart';
 import '../../../data/repositories/presentations_repository.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/screen_title_bar.dart';
 import 'category_form_screen.dart';
 import 'presentation_form_screen.dart';
@@ -25,7 +30,8 @@ class CatalogsScreen extends StatefulWidget {
 }
 
 class _CatalogsScreenState extends State<CatalogsScreen> {
-  final _categoriesRepository = CategoriesRepository.instance;
+  final _categoriesRepository = getIt<CategoriesRepository>();
+  // Presentaciones: todavía en memoria (la API no tiene ese controlador).
   final _presentationsRepository = PresentationsRepository.instance;
   final _searchController = TextEditingController();
 
@@ -33,18 +39,62 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
   List<PresentationModel> _presentations = [];
   CatalogFilter _filter = CatalogFilter.todo;
   String _query = '';
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  /// Solo el administrador puede crear o editar (la API rechaza a los demás).
+  bool get _canEdit =>
+      context.read<AuthProvider>().session?.role == UserRole.administrador;
 
   @override
   void initState() {
     super.initState();
-    _categories = _categoriesRepository.getAll();
     _presentations = _presentationsRepository.getAll();
+    _loadCategories();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  // --- Carga desde la API ---
+  Future<void> _loadCategories() async {
+    try {
+      final categories = await _categoriesRepository.getAll();
+      if (!mounted) return;
+      setState(() {
+        _categories = categories;
+        _errorMessage = null;
+      });
+    } on ApiException catch (e) {
+      _onLoadError(e.message);
+    } catch (_) {
+      _onLoadError('No se pudieron cargar las categorías');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _onLoadError(String message) {
+    if (!mounted) return;
+    setState(() => _errorMessage = message);
+    // Si ya había categorías en pantalla, solo se avisa con un mensaje.
+    if (_categories.isNotEmpty) _showMessage(message);
+  }
+
+  void _onRetry() {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    _loadCategories();
+  }
+
+  void _reload() {
+    setState(() => _presentations = _presentationsRepository.getAll());
+    _loadCategories();
   }
 
   // --- Datos filtrados ---
@@ -75,17 +125,23 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
   }
 
   // --- Eventos ---
-  void _reload() {
-    setState(() {
-      _categories = _categoriesRepository.getAll();
-      _presentations = _presentationsRepository.getAll();
-    });
-  }
-
   void _onSearchChanged(String value) => setState(() => _query = value);
 
   void _onFilterChanged(CatalogFilter filter) =>
       setState(() => _filter = filter);
+
+  void _showReadOnlyMessage() =>
+      _showMessage('Solo el administrador puede modificar los catálogos');
+
+  void _onCategoryTap(CategoryModel category) {
+    if (!_canEdit) return _showReadOnlyMessage();
+    _openCategoryForm(category);
+  }
+
+  void _onPresentationTap(PresentationModel presentation) {
+    if (!_canEdit) return _showReadOnlyMessage();
+    _openPresentationForm(presentation);
+  }
 
   Future<void> _openCategoryForm([CategoryModel? category]) async {
     final saved = await Navigator.push<CategoryModel>(
@@ -195,23 +251,68 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
       );
   }
 
+  Widget _buildLoading() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 32),
+      child: Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  Widget _buildError() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: DarkColors.tarjeta,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          Text(
+            _errorMessage ?? 'No se pudieron cargar las categorías',
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: _onRetry,
+            style: FilledButton.styleFrom(
+              backgroundColor: DarkColors.naranjaBoton,
+              foregroundColor: const Color(0xFF1A1A1A),
+            ),
+            child: const Text('Reintentar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final categories = _filteredCategories;
     final presentations = _filteredPresentations;
-    final isEmpty = categories.isEmpty && presentations.isEmpty;
+    final showCategories = _filter != CatalogFilter.presentaciones;
+    final loadingCategories =
+        showCategories && _isLoading && _categories.isEmpty;
+    final categoriesFailed =
+        showCategories && _errorMessage != null && _categories.isEmpty;
+    final isEmpty = categories.isEmpty &&
+        presentations.isEmpty &&
+        !loadingCategories &&
+        !categoriesFailed;
     final accents = DarkColors.acentosProducto.length;
 
     return Scaffold(
       backgroundColor: DarkColors.fondo,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onAddPressed,
-        tooltip: 'Agregar',
-        backgroundColor: DarkColors.naranjaBoton,
-        foregroundColor: const Color(0xFF1A1A1A),
-        shape: const CircleBorder(),
-        child: const Icon(AppIcons.agregar, size: 32),
-      ),
+      floatingActionButton: _canEdit
+          ? FloatingActionButton(
+              onPressed: _onAddPressed,
+              tooltip: 'Agregar',
+              backgroundColor: DarkColors.naranjaBoton,
+              foregroundColor: const Color(0xFF1A1A1A),
+              shape: const CircleBorder(),
+              child: const Icon(AppIcons.agregar, size: 32),
+            )
+          : null,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -253,6 +354,8 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
                   : ListView(
                       padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
                       children: [
+                        if (loadingCategories) _buildLoading(),
+                        if (categoriesFailed) _buildError(),
                         if (categories.isNotEmpty) ...[
                           const CatalogSectionTitle('Categorías'),
                           const SizedBox(height: 12),
@@ -265,7 +368,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
                                   : category.descripcion,
                               activo: category.activo,
                               accentIndex: (category.id ?? 0) % accents,
-                              onTap: () => _openCategoryForm(category),
+                              onTap: () => _onCategoryTap(category),
                             ),
                             const SizedBox(height: 12),
                           ],
@@ -281,7 +384,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
                               subtitle: presentation.resumen,
                               activo: presentation.activo,
                               accentIndex: ((presentation.id ?? 0) + 2) % accents,
-                              onTap: () => _openPresentationForm(presentation),
+                              onTap: () => _onPresentationTap(presentation),
                             ),
                             const SizedBox(height: 12),
                           ],

@@ -22,7 +22,6 @@ import 'widgets/catalog_section_title.dart';
 class CatalogsScreen extends StatefulWidget {
   const CatalogsScreen({super.key, this.showBack = false});
 
-  /// true cuando se abre como pantalla aparte (con flecha para volver).
   final bool showBack;
 
   @override
@@ -41,7 +40,6 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
   bool _isLoading = true;
   String? _errorMessage;
 
-  /// Solo el administrador puede crear o editar (la API rechaza a los demás).
   bool get _canEdit =>
       context.read<AuthProvider>().session?.role == UserRole.administrador;
 
@@ -57,7 +55,6 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
     super.dispose();
   }
 
-  // --- Carga desde la API ---
   Future<void> _load() async {
     try {
       final categories = await _categoriesRepository.getAll();
@@ -80,7 +77,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
   void _onLoadError(String message) {
     if (!mounted) return;
     setState(() => _errorMessage = message);
-    // Si ya había datos en pantalla, solo se avisa con un mensaje.
+    
     if (_categories.isNotEmpty || _presentations.isNotEmpty) {
       _showMessage(message);
     }
@@ -94,7 +91,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
     _load();
   }
 
-  // --- Datos filtrados ---
+  
   bool _matches(String nombre) {
     final query = _query.trim().toLowerCase();
     return query.isEmpty || nombre.toLowerCase().contains(query);
@@ -121,7 +118,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
     }
   }
 
-  // --- Eventos ---
+ 
   void _onSearchChanged(String value) => setState(() => _query = value);
 
   void _onFilterChanged(CatalogFilter filter) =>
@@ -173,7 +170,6 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
     }
   }
 
-  /// El botón + crea según el filtro; en "Todo" pregunta qué crear.
   Future<void> _onAddPressed() async {
     switch (_filter) {
       case CatalogFilter.categorias:

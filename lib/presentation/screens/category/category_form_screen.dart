@@ -10,7 +10,7 @@ import '../../widgets/screen_title_bar.dart';
 import 'category_validators.dart';
 import 'widgets/catalog_text_field.dart';
 
-/// Formulario para crear (category == null) o editar una categoría.
+
 class CategoryFormScreen extends StatefulWidget {
   const CategoryFormScreen({super.key, this.category});
 

@@ -8,7 +8,6 @@ import '../../data/repositories/suppliers_repository.dart';
 import '../../presentation/providers/auth_provider.dart';
 import '../network/api_client.dart';
 
-/// Contenedor de dependencias (get_it). Aquí se crea cada pieza una sola vez.
 final GetIt getIt = GetIt.instance;
 
 void setupServiceLocator() {

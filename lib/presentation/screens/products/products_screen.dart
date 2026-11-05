@@ -16,10 +16,11 @@ import 'widgets/product_list_card.dart';
 import 'widgets/product_search_field.dart';
 
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({super.key, this.showBack = false});
+  const ProductsScreen({super.key, this.showBack = false, this.onBack});
 
   /// true cuando se abre como pantalla aparte (con flecha para volver).
   final bool showBack;
+  final VoidCallback? onBack;
 
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
@@ -235,7 +236,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
               child: ScreenTitleBar(
                 title: 'Productos',
-                onBack: widget.showBack ? () => Navigator.pop(context) : null,
+                onBack: widget.showBack
+                    ? (widget.onBack ?? () => Navigator.pop(context))
+                    : null,
               ),
             ),
             Padding(

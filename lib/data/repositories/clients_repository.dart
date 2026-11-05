@@ -35,8 +35,9 @@ class ClientsRepository {
 
     try {
       final dynamic response = await _api.get('/Cliente');
-      if (response is List) {
-        final list = response
+      final rows = _extractRows(response);
+      if (rows != null) {
+        final list = rows
             .whereType<Map<String, dynamic>>()
             .map(ClientModel.fromJson)
             .toList();
@@ -53,6 +54,16 @@ class ClientsRepository {
       if (_cachedClients.isNotEmpty) return _cachedClients;
       rethrow;
     }
+  }
+
+  List<dynamic>? _extractRows(dynamic response) {
+    if (response is List) return response;
+    if (response is Map) {
+      for (final key in ['datos', 'data', 'clientes', 'value', 'items']) {
+        if (response[key] is List) return response[key] as List;
+      }
+    }
+    return null;
   }
 
   Future<ClientModel> save(ClientModel client) async {

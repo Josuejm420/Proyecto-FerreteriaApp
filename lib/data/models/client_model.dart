@@ -16,18 +16,18 @@ class ClientModel {
   final bool activo;
 
   factory ClientModel.fromJson(Map<String, dynamic> json) {
-    final rawId = json['id_cliente'] ?? json['idCliente'] ?? json['id'];
+    final rawId = json['id_cliente'] ?? json['idCliente'] ?? json['id'] ?? json['Id_cliente'] ?? json['Id'];
     final id = rawId is num ? rawId.toInt() : int.tryParse('$rawId');
 
-    final rawActivo = json['estado'] ?? json['activo'];
+    final rawActivo = json['estado'] ?? json['activo'] ?? json['Estado'];
     final bool activo = rawActivo is bool ? rawActivo : true;
 
     return ClientModel(
       id: id,
-      documento: (json['documento'] ?? '').toString().trim(),
-      nombre: (json['nombre'] ?? '').toString().trim(),
-      correo: (json['correo'] ?? '').toString().trim(),
-      telefono: (json['telefono'] ?? '').toString().trim(),
+      documento: (json['documento'] ?? json['Documento'] ?? '').toString().trim(),
+      nombre: (json['nombre'] ?? json['Nombre'] ?? '').toString().trim(),
+      correo: (json['correo'] ?? json['Correo'] ?? '').toString().trim(),
+      telefono: (json['telefono'] ?? json['Telefono'] ?? '').toString().trim(),
       activo: activo,
     );
   }

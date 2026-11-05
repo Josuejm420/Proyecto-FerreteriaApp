@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Íconos planos (estilo "outlined") de toda la app.
-/// Si quieres cambiar un ícono en TODAS las pantallas, solo lo cambias aquí.
-/// Se usa así: Icon(AppIcons.clientes)
 class AppIcons {
   AppIcons._();
 
@@ -29,7 +26,6 @@ class AppIcons {
   static const IconData vigente = Icons.check_circle_outline;
   static const IconData advertencia = Icons.warning_amber_outlined;
 
-  // Decoración de Home
   static const IconData herramientas = Icons.handyman_outlined; // encabezado
   static const IconData llave =
       Icons.build_outlined; // llave grande de bienvenida
@@ -59,7 +55,7 @@ class AppIcons {
   static const IconData categoria = Icons.sell_outlined; // etiqueta
   static const IconData presentacion = Icons.straighten_outlined; // regla
 
-    // Reportes
+  // Reportes
   static const IconData trofeo = Icons.emoji_events_outlined;
   static const IconData promedio = Icons.analytics_outlined;
   static const IconData graficoSemanal = Icons.bar_chart_outlined;

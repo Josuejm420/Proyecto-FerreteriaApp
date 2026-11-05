@@ -19,7 +19,6 @@ import '../../presentation/screens/Ventas/sales_screen.dart';
 import '../../presentation/screens/user_management/user_management_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
 
-
 class AppRoutes {
   AppRoutes._();
 
@@ -34,7 +33,6 @@ class AppRoutes {
   static const String productDetail = '/product-detail';
   static const String productForm = '/product-form';
 
-  // Otros módulos del menú principal
   static const String sales = '/sales';
   static const String clients = '/clients';
   static const String purchases = '/purchases';
@@ -58,7 +56,6 @@ class AppRoutes {
     },
     userProfile: (context) => const UserProfileScreen(),
 
-    // Módulo de Productos (Pantallas reales)
     products: (context) => const ProductsScreen(showBack: true),
     productDetail: (context) {
       final arguments = ModalRoute.of(context)?.settings.arguments;
@@ -69,22 +66,17 @@ class AppRoutes {
       return ProductDetailScreen(product: product);
     },
     productForm: (context) {
-      // Sin argumentos = producto nuevo; con argumento = editar.
       final arguments = ModalRoute.of(context)?.settings.arguments;
       final product = arguments is ProductsModel ? arguments : null;
       return ProductFormScreen(product: product);
     },
 
-    // Módulo de Proveedores (Pantalla real)
     suppliers: (context) => const SuppliersScreen(showBack: true),
 
-    // Módulo de Catálogos: categorías y presentaciones (Pantalla real)
     catalogs: (context) => const CatalogsScreen(showBack: true),
 
-    // Módulo de Compras (Pantalla real)
     purchases: (context) => const PurchasesScreen(showBack: true),
 
-    // Módulos de Clientes y Ventas (Pantallas reales)
     clients: (context) => const ClientsScreen(showBack: true),
     sales: (context) {
       final role =
@@ -92,10 +84,8 @@ class AppRoutes {
       return SalesScreen(role: role, showBack: true);
     },
 
-    // Módulo de Gestión de usuarios (solo Administrador, ver home_module.dart)
     usersRoles: (context) => const UserManagementScreen(showBack: true),
 
-    // Módulo de Reportes (solo Administrador, ver home_module.dart)
     reports: (context) => const ReportsScreen(showBack: true),
   };
 }

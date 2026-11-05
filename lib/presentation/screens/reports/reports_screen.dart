@@ -37,6 +37,25 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   ReportPeriod _period = ReportPeriod.todos;
   int _averageView = 0; // 0 = por producto, 1 = por cliente
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() { _loading = true; _error = null; });
+    try {
+      await _repository.load(_period);
+    } catch (e) {
+      _error = '$e';
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
 
   // --- Eventos ---
   void _onPeriodSelected(String? label) {
@@ -47,6 +66,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               .firstOrNull ??
           ReportPeriod.todos;
     });
+    _load();
   }
 
   void _onAverageViewChanged(int index) {
@@ -72,6 +92,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   List<RankingItem> _averageItems() {
     if (_averageView == 0) {
       final products = _repository.averageByProduct(_period);
+      if (products.isEmpty) return [];
       final max = products.first.promedio;
       return [
         for (final p in products)
@@ -85,6 +106,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
     }
 
     final clients = _repository.averageByClient(_period);
+    if (clients.isEmpty) return [];
     final max = clients.first.promedio;
     return [
       for (final c in clients)
@@ -100,7 +122,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   @override
   Widget build(BuildContext context) {
     final summary = _repository.summary(_period);
-    final hasSales = summary.facturas > 0;
+    final hasSales = _repository.topProducts(_period).isNotEmpty || _repository.salesByWeek(_period).isNotEmpty;
 
     return Scaffold(
       backgroundColor: DarkColors.fondo,
@@ -155,7 +177,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  if (!hasSales)
+                  if (_loading)
+                    const Padding(padding: EdgeInsets.all(32), child: Center(child: CircularProgressIndicator()))
+                  else if (_error != null)
+                    ReportEmptyMessage(text: 'No se pudieron cargar los reportes: $_error')
+                  else if (!hasSales)
                     const ReportEmptyMessage(
                       text: 'No hay ventas registradas en este periodo',
                     )
@@ -173,14 +199,15 @@ class _ReportsScreenState extends State<ReportsScreen> {
   List<Widget> _buildReports() {
     final topProducts = _repository.topProducts(_period);
     final weeks = _repository.salesByWeek(_period);
+    final averages = _averageItems();
 
     return [
       // --- 1. Producto más vendido ---
       const SectionTitle(icon: AppIcons.trofeo, text: 'Producto más vendido'),
       const SizedBox(height: 12),
-      TopProductCard(product: topProducts.first),
+      if (topProducts.isNotEmpty) TopProductCard(product: topProducts.first),
       const SizedBox(height: 12),
-      ReportRankingList(items: _topProductItems(topProducts)),
+      if (topProducts.isNotEmpty) ReportRankingList(items: _topProductItems(topProducts)) else const ReportEmptyMessage(text: 'No hay productos vendidos'),
       const SizedBox(height: 28),
 
       // --- 2. Venta promedio por producto / cliente ---
@@ -192,7 +219,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
         onChanged: _onAverageViewChanged,
       ),
       const SizedBox(height: 12),
-      ReportRankingList(items: _averageItems()),
+      if (averages.isNotEmpty) ReportRankingList(items: averages) else const ReportEmptyMessage(text: 'La API no devolvió datos de promedios'),
       const SizedBox(height: 28),
 
       // --- 3. Ventas por semana ---

@@ -12,10 +12,16 @@ import 'sale_detail_screen.dart';
 import 'widgets/sales_list_card.dart';
 
 class SalesScreen extends StatefulWidget {
-  const SalesScreen({super.key, required this.role, this.showBack = false});
+  const SalesScreen({
+    super.key,
+    required this.role,
+    this.showBack = false,
+    this.onBack,
+  });
 
   final UserRole role;
   final bool showBack;
+  final VoidCallback? onBack;
 
   @override
   State<SalesScreen> createState() => _SalesScreenState();
@@ -111,7 +117,9 @@ class _SalesScreenState extends State<SalesScreen> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
               child: ScreenTitleBar(
                 title: 'Ventas',
-                onBack: widget.showBack ? () => Navigator.pop(context) : null,
+                onBack: widget.showBack
+                    ? (widget.onBack ?? () => Navigator.pop(context))
+                    : null,
               ),
             ),
             Padding(

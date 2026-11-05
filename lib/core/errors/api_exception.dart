@@ -1,4 +1,3 @@
-/// Error controlado de la API. El mensaje ya viene listo para mostrarse.
 class ApiException implements Exception {
   const ApiException(this.message, {this.statusCode});
 

@@ -97,11 +97,18 @@ class _UserFormScreenState extends State<UserFormScreen> {
       idRol: _idRol!,
     );
 
-    final saved = await _repository.save(user);
-
-    if (!mounted) return;
-    setState(() => _isSaving = false);
-    Navigator.pop(context, saved); // devuelve el usuario guardado
+    try {
+      final saved = await _repository.save(user);
+      if (!mounted) return;
+      Navigator.pop(context, saved);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo guardar el usuario: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
   }
 
   @override

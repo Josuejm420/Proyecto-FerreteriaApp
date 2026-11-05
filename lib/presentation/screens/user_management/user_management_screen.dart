@@ -28,11 +28,13 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   List<UserModel> _users = [];
   String _query = '';
   String? _roleFilter; // null = Todos
+  bool _loading = true;
+  String? _loadError;
 
   @override
   void initState() {
     super.initState();
-    _users = _repository.getAll();
+    _loadUsers();
   }
 
   @override
@@ -55,7 +57,16 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   }
 
   // --- Eventos ---
-  void _reload() => setState(() => _users = _repository.getAll());
+  Future<void> _loadUsers() async {
+    try {
+      final users = await _repository.refresh();
+      if (mounted) setState(() { _users = users; _loadError = null; _loading = false; });
+    } catch (e) {
+      if (mounted) setState(() { _users = _repository.getAll(); _loadError = '$e'; _loading = false; });
+    }
+  }
+
+  void _reload() => _loadUsers();
 
   void _onSearchChanged(String value) => setState(() => _query = value);
 
@@ -133,7 +144,11 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
             ),
             const SizedBox(height: 12),
             Expanded(
-              child: items.isEmpty
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _loadError != null && _users.isEmpty
+                      ? Center(child: Padding(padding: const EdgeInsets.all(24), child: Text('No se pudieron cargar usuarios: $_loadError', textAlign: TextAlign.center, style: const TextStyle(color: DarkColors.textoSuave))))
+                  : items.isEmpty
                   ? Center(
                       child: Text(
                         _users.isEmpty

@@ -26,7 +26,7 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   late ProductsModel _product;
 
-  /// Solo el administrador puede editar (la API rechaza a los demás).
+  
   bool get _canEdit =>
       context.read<AuthProvider>().session?.role == UserRole.administrador;
 
@@ -36,7 +36,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _product = widget.product;
   }
 
-  // --- Eventos ---
+  
   Future<void> _onEdit() async {
     final updated = await Navigator.push<ProductsModel>(
       context,

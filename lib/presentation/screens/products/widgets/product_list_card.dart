@@ -17,7 +17,7 @@ class ProductListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // El color de la franja cambia según el producto.
+    
     final index =
         ((product.id ?? 1) - 1) % DarkColors.acentosProducto.length;
     final accent = DarkColors.acentosProducto[index];

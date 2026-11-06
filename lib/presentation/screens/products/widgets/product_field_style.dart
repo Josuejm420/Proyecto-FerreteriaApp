@@ -9,7 +9,7 @@ OutlineInputBorder _border(Color color, [double width = 1]) {
   );
 }
 
-/// InputDecoration oscuro compartido por los campos del formulario.
+
 InputDecoration productInputDecoration({String? hint}) {
   return InputDecoration(
     hintText: hint,
@@ -26,7 +26,7 @@ InputDecoration productInputDecoration({String? hint}) {
   );
 }
 
-/// Etiqueta pequeña que va encima de cada campo.
+
 class FieldLabel extends StatelessWidget {
   const FieldLabel(this.text, {super.key});
 

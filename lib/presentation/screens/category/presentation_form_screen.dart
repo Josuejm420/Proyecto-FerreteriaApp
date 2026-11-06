@@ -10,7 +10,7 @@ import '../../widgets/screen_title_bar.dart';
 import 'presentation_validators.dart';
 import 'widgets/catalog_text_field.dart';
 
-/// Formulario para crear (presentation == null) o editar una presentación.
+
 class PresentationFormScreen extends StatefulWidget {
   const PresentationFormScreen({super.key, this.presentation});
 

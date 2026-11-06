@@ -19,7 +19,7 @@ class CatalogListCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool activo;
-  final int accentIndex; // elige el color de la franja y del icono
+  final int accentIndex; 
   final VoidCallback onTap;
 
   @override

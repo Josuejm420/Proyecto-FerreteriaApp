@@ -2,7 +2,6 @@
 class ApiConfig {
   ApiConfig._();
 
-
   static const String baseUrl = String.fromEnvironment(
     'API_URL',
     defaultValue:

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/di/service_locator.dart';
+import '../../../core/errors/api_exception.dart';
 import '../../../data/models/presentation_model.dart';
 import '../../../data/repositories/presentations_repository.dart';
 import '../../widgets/primary_button.dart';
@@ -8,7 +10,7 @@ import '../../widgets/screen_title_bar.dart';
 import 'presentation_validators.dart';
 import 'widgets/catalog_text_field.dart';
 
-/// Formulario para crear (presentation == null) o editar una presentación.
+
 class PresentationFormScreen extends StatefulWidget {
   const PresentationFormScreen({super.key, this.presentation});
 
@@ -50,6 +52,18 @@ class _PresentationFormScreenState extends State<PresentationFormScreen> {
   // --- Eventos ---
   void _onActiveChanged(bool? value) => setState(() => _activo = value ?? true);
 
+  void _showError(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(text),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
+
   Future<void> _onSave() async {
     FocusScope.of(context).unfocus();
 
@@ -65,11 +79,19 @@ class _PresentationFormScreenState extends State<PresentationFormScreen> {
       activo: _activo,
     );
 
-    final saved = await PresentationsRepository.instance.save(presentation);
-
-    if (!mounted) return;
-    setState(() => _isSaving = false);
-    Navigator.pop(context, saved); // devuelve la presentación guardada
+    try {
+      final saved = await getIt<PresentationsRepository>().save(presentation);
+      if (!mounted) return;
+      Navigator.pop(context, saved); // devuelve la presentación guardada
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showError(e.message); // por ejemplo: "Ya existe una presentación..."
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showError('No se pudo guardar la presentación');
+    }
   }
 
   @override

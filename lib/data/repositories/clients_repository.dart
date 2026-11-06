@@ -1,63 +1,91 @@
+import '../../core/di/service_locator.dart';
+import '../../core/network/api_client.dart';
 import '../models/client_model.dart';
 
-/// Repositorio de clientes en memoria (datos de ejemplo).
-/// Cuando tengan API, solo cambian el interior de estos métodos.
 class ClientsRepository {
-  ClientsRepository._();
+  ClientsRepository([ApiClient? api])
+    : _api =
+          api ??
+          (getIt.isRegistered<ApiClient>() ? getIt<ApiClient>() : ApiClient());
 
-  static final ClientsRepository instance = ClientsRepository._();
+  final ApiClient _api;
 
-  int _nextId = 4;
+  static ClientsRepository get instance =>
+      getIt.isRegistered<ClientsRepository>()
+      ? getIt<ClientsRepository>()
+      : _defaultInstance;
+  static final ClientsRepository _defaultInstance = ClientsRepository();
 
-  final List<ClientModel> _clients = [
-    const ClientModel(
-      id: 1,
-      documento: '001-120590-0001A',
-      nombre: 'Carlos Mendoza',
-      correo: 'carlos@mail.com',
-      telefono: '8845-1122',
-    ),
-    const ClientModel(
-      id: 2,
-      documento: 'J0310000054321',
-      nombre: 'Constructora Jinotepe',
-      correo: 'compras@cjinotepe.com',
-      telefono: '2532-1000',
-    ),
-    const ClientModel(
-      id: 3,
-      documento: '001-050388-0005B',
-      nombre: 'Ana Gutiérrez',
-      correo: 'ana.g@mail.com',
-      telefono: '8791-3344',
-      activo: false,
-    ),
-  ];
+  List<ClientModel> _cachedClients = [];
 
-  List<ClientModel> getAll() => List.unmodifiable(_clients);
+  List<ClientModel> getAllCached() => List.unmodifiable(_cachedClients);
 
   ClientModel? findById(int? id) {
-    for (final client in _clients) {
+    if (id == null) return null;
+    for (final client in _cachedClients) {
       if (client.id == id) return client;
     }
     return null;
   }
 
+  Future<List<ClientModel>> getAll({bool forceRefresh = false}) async {
+    if (_cachedClients.isNotEmpty && !forceRefresh) {
+      return _cachedClients;
+    }
+
+    try {
+      final dynamic response = await _api.get('/Cliente');
+      final rows = _extractRows(response);
+      if (rows != null) {
+        final list = rows
+            .whereType<Map<String, dynamic>>()
+            .map(ClientModel.fromJson)
+            .toList();
+
+        list.sort(
+          (a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()),
+        );
+
+        _cachedClients = list;
+        return _cachedClients;
+      }
+      return _cachedClients;
+    } catch (_) {
+      if (_cachedClients.isNotEmpty) return _cachedClients;
+      rethrow;
+    }
+  }
+
+  List<dynamic>? _extractRows(dynamic response) {
+    if (response is List) return response;
+    if (response is Map) {
+      for (final key in ['datos', 'data', 'clientes', 'value', 'items']) {
+        if (response[key] is List) return response[key] as List;
+      }
+    }
+    return null;
+  }
+
   Future<ClientModel> save(ClientModel client) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-
     if (client.id == null) {
-      final created = client.copyWith(id: _nextId++);
-      _clients.insert(0, created);
-      return created;
-    }
+      final dynamic response = await _api.post(
+        '/Cliente',
+        body: client.toJson(),
+      );
+      final created = response is Map<String, dynamic>
+          ? ClientModel.fromJson(response)
+          : client;
 
-    final index = _clients.indexWhere((c) => c.id == client.id);
-    if (index == -1) {
-      _clients.insert(0, client);
+      _cachedClients.insert(0, created);
+      return created;
     } else {
-      _clients[index] = client;
+      await _api.put('/Cliente/${client.id}', body: client.toJson());
+
+      final index = _cachedClients.indexWhere((c) => c.id == client.id);
+      if (index != -1) {
+        _cachedClients[index] = client;
+      }
+      return client;
     }
-    return client;
   }
 }

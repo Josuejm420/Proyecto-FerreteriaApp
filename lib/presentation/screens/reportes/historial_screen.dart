@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const Color _azulOscuro = Color(0xFF102A43);
-const Color _amarillo = Color(0xFFF2B705); 
+const Color _amarillo = Color(0xFFF2B705);
 const Color _fondo = Color(0xFFF5F6FA);
 
 class _Operacion {
@@ -120,11 +120,13 @@ class _HistorialScreenState extends State<HistorialScreen> {
   List<_Operacion> get _filtradas {
     final q = _busqueda.trim().toLowerCase();
     return _fuente.where((op) {
-      final coincideTexto = q.isEmpty ||
+      final coincideTexto =
+          q.isEmpty ||
           op.tercero.toLowerCase().contains(q) ||
           op.numero.contains(q);
 
-      final coincideFecha = _rangoFechas == null ||
+      final coincideFecha =
+          _rangoFechas == null ||
           (!_soloFecha(op.fecha).isBefore(_soloFecha(_rangoFechas!.start)) &&
               !_soloFecha(op.fecha).isAfter(_soloFecha(_rangoFechas!.end)));
 
@@ -399,7 +401,6 @@ class _HistorialScreenState extends State<HistorialScreen> {
     );
   }
 
- 
   void _mostrarDetalle(_Operacion op) {
     final etiqueta = _verVentas ? 'Venta' : 'Compra';
     final terceroLabel = _verVentas ? 'Cliente' : 'Proveedor';
@@ -443,10 +444,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
             const Divider(height: 24),
             const Text(
               'Productos',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: _azulOscuro,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600, color: _azulOscuro),
             ),
             const SizedBox(height: 8),
             ...op.lineas.map(

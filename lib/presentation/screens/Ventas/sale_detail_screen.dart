@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
+import '../../../core/errors/api_exception.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../data/models/sale_model.dart';
 import '../../../data/models/user_role.dart';
@@ -13,7 +14,6 @@ import '../../widgets/info_card.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/screen_title_bar.dart';
 
-/// Detalle de una factura. El administrador puede anularla.
 class SaleDetailScreen extends StatefulWidget {
   const SaleDetailScreen({super.key, required this.sale, required this.role});
 
@@ -29,6 +29,7 @@ class _SaleDetailScreenState extends State<SaleDetailScreen> {
 
   late SaleModel _sale;
   bool _isSaving = false;
+  bool _isLoadingDetails = false;
 
   bool get _isAdmin => widget.role == UserRole.administrador;
 
@@ -36,9 +37,21 @@ class _SaleDetailScreenState extends State<SaleDetailScreen> {
   void initState() {
     super.initState();
     _sale = widget.sale;
+    if (_sale.detalles.isEmpty && _sale.id != null) {
+      _loadDetails();
+    }
   }
 
-  // --- Eventos ---
+  Future<void> _loadDetails() async {
+    setState(() => _isLoadingDetails = true);
+    final details = await _repository.getDetalles(_sale.id!);
+    if (!mounted) return;
+    setState(() {
+      _sale = _sale.copyWith(detalles: details);
+      _isLoadingDetails = false;
+    });
+  }
+
   Future<void> _onAnular() async {
     final confirmed = await showConfirmDialog(
       context,
@@ -50,14 +63,24 @@ class _SaleDetailScreenState extends State<SaleDetailScreen> {
     if (!confirmed || !mounted) return;
 
     setState(() => _isSaving = true);
-    final updated = await _repository.anular(_sale);
-    if (!mounted) return;
+    try {
+      final updated = await _repository.anular(_sale);
+      if (!mounted) return;
 
-    setState(() {
-      _sale = updated;
-      _isSaving = false;
-    });
-    _showMessage('Factura anulada');
+      setState(() {
+        _sale = updated;
+        _isSaving = false;
+      });
+      _showMessage('Factura anulada correctamente');
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showMessage(e.message);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      _showMessage('Error al anular la factura en el servidor');
+    }
   }
 
   void _showMessage(String text) {
@@ -73,7 +96,7 @@ class _SaleDetailScreenState extends State<SaleDetailScreen> {
     final lines = [
       for (final d in _sale.detalles)
         DocumentLine(
-          nombre: _repository.productoNombre(d.productoId),
+          nombre: d.productoNombre ?? _repository.productoNombre(d.productoId),
           cantidad: d.cantidad,
           subtotal: d.subtotal,
         ),
@@ -97,13 +120,34 @@ class _SaleDetailScreenState extends State<SaleDetailScreen> {
                 ('Comprobante', _sale.numeroComprobante),
                 ('Fecha de venta', AppFormat.date(_sale.fechaVenta)),
                 ('Cliente', _repository.clienteNombre(_sale)),
-                ('Atendió', _sale.atendio),
+                (
+                  'Atendió',
+                  _sale.atendio.isNotEmpty ? _sale.atendio : 'Vendedor',
+                ),
               ],
             ),
             const SizedBox(height: 20),
             const _SectionLabel('Detalle de productos'),
             const SizedBox(height: 10),
-            DocumentLinesCard(lines: lines),
+            if (_isLoadingDetails)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(
+                    color: DarkColors.naranjaBoton,
+                  ),
+                ),
+              )
+            else if (lines.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(12),
+                child: Text(
+                  'No hay productos detallados en esta factura',
+                  style: TextStyle(color: DarkColors.textoSuave),
+                ),
+              )
+            else
+              DocumentLinesCard(lines: lines),
             const SizedBox(height: 20),
             const _SectionLabel('Totales'),
             const SizedBox(height: 10),
@@ -143,7 +187,6 @@ class _SaleDetailScreenState extends State<SaleDetailScreen> {
   }
 }
 
-/// Título pequeño con barra naranja, para separar secciones.
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel(this.text);
 
@@ -151,26 +194,13 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 4,
-          height: 22,
-          decoration: BoxDecoration(
-            color: DarkColors.naranja,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ],
+    return Text(
+      text,
+      style: const TextStyle(
+        color: DarkColors.textoSuave,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 }

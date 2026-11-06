@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
+import '../../../core/di/service_locator.dart';
+import '../../../core/errors/api_exception.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/models/presentation_model.dart';
+import '../../../data/models/user_role.dart';
 import '../../../data/repositories/categories_repository.dart';
 import '../../../data/repositories/presentations_repository.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/screen_title_bar.dart';
 import 'category_form_screen.dart';
 import 'presentation_form_screen.dart';
@@ -17,7 +22,6 @@ import 'widgets/catalog_section_title.dart';
 class CatalogsScreen extends StatefulWidget {
   const CatalogsScreen({super.key, this.showBack = false});
 
-  /// true cuando se abre como pantalla aparte (con flecha para volver).
   final bool showBack;
 
   @override
@@ -25,20 +29,24 @@ class CatalogsScreen extends StatefulWidget {
 }
 
 class _CatalogsScreenState extends State<CatalogsScreen> {
-  final _categoriesRepository = CategoriesRepository.instance;
-  final _presentationsRepository = PresentationsRepository.instance;
+  final _categoriesRepository = getIt<CategoriesRepository>();
+  final _presentationsRepository = getIt<PresentationsRepository>();
   final _searchController = TextEditingController();
 
   List<CategoryModel> _categories = [];
   List<PresentationModel> _presentations = [];
   CatalogFilter _filter = CatalogFilter.todo;
   String _query = '';
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  bool get _canEdit =>
+      context.read<AuthProvider>().session?.role == UserRole.administrador;
 
   @override
   void initState() {
     super.initState();
-    _categories = _categoriesRepository.getAll();
-    _presentations = _presentationsRepository.getAll();
+    _load();
   }
 
   @override
@@ -47,7 +55,43 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
     super.dispose();
   }
 
-  // --- Datos filtrados ---
+  Future<void> _load() async {
+    try {
+      final categories = await _categoriesRepository.getAll();
+      final presentations = await _presentationsRepository.getAll();
+      if (!mounted) return;
+      setState(() {
+        _categories = categories;
+        _presentations = presentations;
+        _errorMessage = null;
+      });
+    } on ApiException catch (e) {
+      _onLoadError(e.message);
+    } catch (_) {
+      _onLoadError('No se pudieron cargar los catálogos');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _onLoadError(String message) {
+    if (!mounted) return;
+    setState(() => _errorMessage = message);
+    
+    if (_categories.isNotEmpty || _presentations.isNotEmpty) {
+      _showMessage(message);
+    }
+  }
+
+  void _onRetry() {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    _load();
+  }
+
+  
   bool _matches(String nombre) {
     final query = _query.trim().toLowerCase();
     return query.isEmpty || nombre.toLowerCase().contains(query);
@@ -74,18 +118,24 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
     }
   }
 
-  // --- Eventos ---
-  void _reload() {
-    setState(() {
-      _categories = _categoriesRepository.getAll();
-      _presentations = _presentationsRepository.getAll();
-    });
-  }
-
+ 
   void _onSearchChanged(String value) => setState(() => _query = value);
 
   void _onFilterChanged(CatalogFilter filter) =>
       setState(() => _filter = filter);
+
+  void _showReadOnlyMessage() =>
+      _showMessage('Solo el administrador puede modificar los catálogos');
+
+  void _onCategoryTap(CategoryModel category) {
+    if (!_canEdit) return _showReadOnlyMessage();
+    _openCategoryForm(category);
+  }
+
+  void _onPresentationTap(PresentationModel presentation) {
+    if (!_canEdit) return _showReadOnlyMessage();
+    _openPresentationForm(presentation);
+  }
 
   Future<void> _openCategoryForm([CategoryModel? category]) async {
     final saved = await Navigator.push<CategoryModel>(
@@ -95,7 +145,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
       ),
     );
     if (!mounted) return;
-    _reload();
+    _load();
     if (saved != null) {
       _showMessage(category == null
           ? 'Categoría creada correctamente'
@@ -112,7 +162,7 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
       ),
     );
     if (!mounted) return;
-    _reload();
+    _load();
     if (saved != null) {
       _showMessage(presentation == null
           ? 'Presentación creada correctamente'
@@ -120,7 +170,6 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
     }
   }
 
-  /// El botón + crea según el filtro; en "Todo" pregunta qué crear.
   Future<void> _onAddPressed() async {
     switch (_filter) {
       case CatalogFilter.categorias:
@@ -195,23 +244,66 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
       );
   }
 
+  Widget _buildLoading() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 32),
+      child: Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  Widget _buildError() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: DarkColors.tarjeta,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          Text(
+            _errorMessage ?? 'No se pudieron cargar los catálogos',
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: _onRetry,
+            style: FilledButton.styleFrom(
+              backgroundColor: DarkColors.naranjaBoton,
+              foregroundColor: const Color(0xFF1A1A1A),
+            ),
+            child: const Text('Reintentar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final categories = _filteredCategories;
     final presentations = _filteredPresentations;
-    final isEmpty = categories.isEmpty && presentations.isEmpty;
+    final hasNoData = _categories.isEmpty && _presentations.isEmpty;
+    final isFirstLoad = _isLoading && hasNoData;
+    final hasFailed = _errorMessage != null && hasNoData;
+    final isEmpty = categories.isEmpty &&
+        presentations.isEmpty &&
+        !isFirstLoad &&
+        !hasFailed;
     final accents = DarkColors.acentosProducto.length;
 
     return Scaffold(
       backgroundColor: DarkColors.fondo,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onAddPressed,
-        tooltip: 'Agregar',
-        backgroundColor: DarkColors.naranjaBoton,
-        foregroundColor: const Color(0xFF1A1A1A),
-        shape: const CircleBorder(),
-        child: const Icon(AppIcons.agregar, size: 32),
-      ),
+      floatingActionButton: _canEdit
+          ? FloatingActionButton(
+              onPressed: _onAddPressed,
+              tooltip: 'Agregar',
+              backgroundColor: DarkColors.naranjaBoton,
+              foregroundColor: const Color(0xFF1A1A1A),
+              shape: const CircleBorder(),
+              child: const Icon(AppIcons.agregar, size: 32),
+            )
+          : null,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -250,43 +342,50 @@ class _CatalogsScreenState extends State<CatalogsScreen> {
                         style: const TextStyle(color: DarkColors.textoSuave),
                       ),
                     )
-                  : ListView(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
-                      children: [
-                        if (categories.isNotEmpty) ...[
-                          const CatalogSectionTitle('Categorías'),
-                          const SizedBox(height: 12),
-                          for (final category in categories) ...[
-                            CatalogListCard(
-                              icon: AppIcons.categoria,
-                              title: category.nombre,
-                              subtitle: category.descripcion.isEmpty
-                                  ? 'Categoría'
-                                  : category.descripcion,
-                              activo: category.activo,
-                              accentIndex: (category.id ?? 0) % accents,
-                              onTap: () => _openCategoryForm(category),
-                            ),
+                  : RefreshIndicator(
+                      onRefresh: _load,
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
+                        children: [
+                          if (isFirstLoad) _buildLoading(),
+                          if (hasFailed) _buildError(),
+                          if (categories.isNotEmpty) ...[
+                            const CatalogSectionTitle('Categorías'),
                             const SizedBox(height: 12),
+                            for (final category in categories) ...[
+                              CatalogListCard(
+                                icon: AppIcons.categoria,
+                                title: category.nombre,
+                                subtitle: category.descripcion.isEmpty
+                                    ? 'Categoría'
+                                    : category.descripcion,
+                                activo: category.activo,
+                                accentIndex: (category.id ?? 0) % accents,
+                                onTap: () => _onCategoryTap(category),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
+                          ],
+                          if (presentations.isNotEmpty) ...[
+                            if (categories.isNotEmpty) const SizedBox(height: 8),
+                            const CatalogSectionTitle('Presentaciones'),
+                            const SizedBox(height: 12),
+                            for (final presentation in presentations) ...[
+                              CatalogListCard(
+                                icon: AppIcons.presentacion,
+                                title: presentation.nombre,
+                                subtitle: presentation.resumen,
+                                activo: presentation.activo,
+                                accentIndex:
+                                    ((presentation.id ?? 0) + 2) % accents,
+                                onTap: () => _onPresentationTap(presentation),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
                           ],
                         ],
-                        if (presentations.isNotEmpty) ...[
-                          if (categories.isNotEmpty) const SizedBox(height: 8),
-                          const CatalogSectionTitle('Presentaciones'),
-                          const SizedBox(height: 12),
-                          for (final presentation in presentations) ...[
-                            CatalogListCard(
-                              icon: AppIcons.presentacion,
-                              title: presentation.nombre,
-                              subtitle: presentation.resumen,
-                              activo: presentation.activo,
-                              accentIndex: ((presentation.id ?? 0) + 2) % accents,
-                              onTap: () => _openPresentationForm(presentation),
-                            ),
-                            const SizedBox(height: 12),
-                          ],
-                        ],
-                      ],
+                      ),
                     ),
             ),
           ],

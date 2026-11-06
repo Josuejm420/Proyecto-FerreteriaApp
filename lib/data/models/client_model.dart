@@ -1,5 +1,3 @@
-/// Representa un registro de la tabla Cliente.
-/// (fecha_registro la genera la base de datos, por eso no va aquí).
 class ClientModel {
   const ClientModel({
     this.id,
@@ -10,14 +8,39 @@ class ClientModel {
     this.activo = true,
   });
 
-  final int? id; // id_cliente: null cuando el cliente aún no se ha guardado
+  final int? id;
   final String documento;
   final String nombre;
   final String correo;
   final String telefono;
-  final bool activo; // estado
+  final bool activo;
 
-  /// Copia el cliente cambiando solo lo que se indique (por ejemplo, el id).
+  factory ClientModel.fromJson(Map<String, dynamic> json) {
+    final rawId = json['id_cliente'] ?? json['idCliente'] ?? json['id'] ?? json['Id_cliente'] ?? json['Id'];
+    final id = rawId is num ? rawId.toInt() : int.tryParse('$rawId');
+
+    final rawActivo = json['estado'] ?? json['activo'] ?? json['Estado'];
+    final bool activo = rawActivo is bool ? rawActivo : true;
+
+    return ClientModel(
+      id: id,
+      documento: (json['documento'] ?? json['Documento'] ?? '').toString().trim(),
+      nombre: (json['nombre'] ?? json['Nombre'] ?? '').toString().trim(),
+      correo: (json['correo'] ?? json['Correo'] ?? '').toString().trim(),
+      telefono: (json['telefono'] ?? json['Telefono'] ?? '').toString().trim(),
+      activo: activo,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    if (id != null) 'id_cliente': id,
+    'documento': documento,
+    'nombre': nombre,
+    'correo': correo,
+    'telefono': telefono,
+    'estado': activo,
+  };
+
   ClientModel copyWith({
     int? id,
     String? documento,

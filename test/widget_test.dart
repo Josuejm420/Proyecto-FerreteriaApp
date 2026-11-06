@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app_ferreteria/main.dart';
 import 'package:app_ferreteria/core/constants/app_routes.dart';
-import 'package:app_ferreteria/data/models/products_model.dart';
+import 'package:app_ferreteria/data/models/presentation_model.dart';
 import 'package:app_ferreteria/data/models/user_role.dart';
 import 'package:app_ferreteria/presentation/screens/Home/home_screen.dart';
 import 'package:app_ferreteria/presentation/screens/login/login_screen.dart';
@@ -46,6 +46,35 @@ void main() {
     expect(find.byType(HomeScreen), findsOneWidget);
     expect(find.text('Don Antonio Ruiz'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
+  });
+
+  testWidgets('employee demo role authenticates with employee credentials', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const FerreteriaApp());
+
+    await tester.tap(find.text('Empleado'));
+    await tester.pump();
+
+    expect(
+      tester
+          .widget<TextFormField>(find.byType(TextFormField).first)
+          .controller
+          ?.text,
+      'juan@dontono.com',
+    );
+
+    await tester.ensureVisible(find.text('Iniciar sesión'));
+    await tester.tap(find.text('Iniciar sesión'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HomeScreen), findsOneWidget);
+    expect(find.text('Juan Pérez'), findsOneWidget);
   });
 
   testWidgets('profile route is registered', (tester) async {
@@ -148,7 +177,7 @@ void main() {
     await tester.tap(find.text('Pinturas').last);
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byType(DropdownButtonFormField<ProductPresentation>).first,
+      find.byType(DropdownButtonFormField<PresentationModel>).first,
     );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Unidad (unidad)').last);

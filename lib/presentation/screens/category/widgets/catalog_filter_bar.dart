@@ -4,7 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 
 enum CatalogFilter { todo, categorias, presentaciones }
 
-/// Tres botones: Todo / Categorías / Presentaciones.
+
 class CatalogFilterBar extends StatelessWidget {
   const CatalogFilterBar({
     super.key,

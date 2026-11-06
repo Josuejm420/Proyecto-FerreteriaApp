@@ -13,6 +13,29 @@ class PresentationModel {
   final double peso;
   final bool activo;
 
+  /// Lee una presentación tal como la devuelve la API.
+  /// En la base `peso` es texto, aquí se convierte a número.
+  factory PresentationModel.fromJson(Map<String, dynamic> json) {
+    final pesoTexto = '${json['peso'] ?? ''}'.trim().replaceAll(',', '.');
+
+    return PresentationModel(
+      id: (json['id_presentacion'] as num?)?.toInt(),
+      nombre: ((json['nombre'] as String?) ?? '').trim(),
+      unidadMedida: ((json['unidad_medida'] as String?) ?? '').trim(),
+      peso: double.tryParse(pesoTexto) ?? 1,
+      activo: (json['estado'] as bool?) ?? true,
+    );
+  }
+
+  /// Formato que espera la API al crear o editar (peso va como texto).
+  Map<String, dynamic> toJson() => {
+    if (id != null) 'id_presentacion': id,
+    'nombre': nombre,
+    'unidad_medida': unidadMedida,
+    'peso': pesoTexto,
+    'estado': activo,
+  };
+
   /// 42.5 -> "42.5", 100.0 -> "100"
   String get pesoTexto =>
       peso == peso.truncateToDouble() ? peso.toInt().toString() : '$peso';

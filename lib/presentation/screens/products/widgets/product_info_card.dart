@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../data/models/products_model.dart';
 
-/// Tarjeta con los datos del producto (etiqueta a la izquierda, valor a la derecha).
+
 class ProductInfoCard extends StatelessWidget {
   const ProductInfoCard({super.key, required this.product});
 

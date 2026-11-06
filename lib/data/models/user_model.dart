@@ -20,6 +20,29 @@ class UserModel {
   final DateTime? fechaRegistro;
   final int idRol; // id_rol
 
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+    id: (json['id_usuario'] as num?)?.toInt(),
+    nombre: '${json['nombre'] ?? ''}',
+    direccion: '${json['direccion'] ?? ''}',
+    correo: '${json['correo'] ?? ''}',
+    contrasena: '${json['contraseña'] ?? json['contrasena'] ?? ''}',
+    activo: json['estado'] as bool? ?? true,
+    fechaRegistro: DateTime.tryParse('${json['fecha_registro'] ?? ''}'),
+    idRol: ((json['oRol'] ?? json['id_rol']) as num?)?.toInt() ?? 0,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'id_usuario': id ?? 0,
+    'nombre': nombre,
+    'direccion': direccion,
+    'correo': correo,
+    'contraseña': contrasena,
+    'estado': activo,
+    'fecha_registro': (fechaRegistro ?? DateTime.now()).toIso8601String(),
+    'oRol': idRol,
+    'nombre_rol': '',
+  };
+
   UserModel copyWith({
     int? id,
     String? nombre,

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/di/service_locator.dart';
+import '../../../core/errors/api_exception.dart';
 import '../../../data/models/products_model.dart';
+import '../../../data/models/user_role.dart';
 import '../../../data/repositories/products_repository.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/screen_title_bar.dart';
 import 'product_form_screen.dart';
 import 'widgets/product_image_banner.dart';
@@ -21,13 +26,17 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   late ProductsModel _product;
 
+  
+  bool get _canEdit =>
+      context.read<AuthProvider>().session?.role == UserRole.administrador;
+
   @override
   void initState() {
     super.initState();
     _product = widget.product;
   }
 
-  // --- Eventos ---
+  
   Future<void> _onEdit() async {
     final updated = await Navigator.push<ProductsModel>(
       context,
@@ -77,13 +86,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     if (confirmed != true || !mounted) return;
 
-    final updated = await ProductsRepository.instance.save(
-      _product.copyWith(activo: !_product.activo),
-    );
-    if (!mounted) return;
+    try {
+      final updated = await getIt<ProductsRepository>().save(
+        _product.copyWith(activo: !_product.activo),
+      );
+      if (!mounted) return;
 
-    setState(() => _product = updated);
-    _showMessage(updated.activo ? 'Producto activado' : 'Producto desactivado');
+      setState(() => _product = updated);
+      _showMessage(
+        updated.activo ? 'Producto activado' : 'Producto desactivado',
+      );
+    } on ApiException catch (e) {
+      if (mounted) _showMessage(e.message);
+    } catch (_) {
+      if (mounted) _showMessage('No se pudo cambiar el estado del producto');
+    }
   }
 
   void _showMessage(String text) {
@@ -124,52 +141,54 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
             const SizedBox(height: 16),
             ProductInfoCard(product: _product),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: _onEdit,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white54, width: 2),
-                      minimumSize: const Size.fromHeight(56),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
+            if (_canEdit) ...[
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _onEdit,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: Colors.white54, width: 2),
+                        minimumSize: const Size.fromHeight(56),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      'Editar',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: _onToggleStatus,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: DarkColors.naranjaBoton,
-                      foregroundColor: const Color(0xFF1A1A1A),
-                      minimumSize: const Size.fromHeight(56),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                    child: Text(
-                      _product.activo ? 'Desactivar' : 'Activar',
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
+                      child: const Text(
+                        'Editar',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: _onToggleStatus,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: DarkColors.naranjaBoton,
+                        foregroundColor: const Color(0xFF1A1A1A),
+                        minimumSize: const Size.fromHeight(56),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                      child: Text(
+                        _product.activo ? 'Desactivar' : 'Activar',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../data/models/products_model.dart';
 import '../../data/models/user_role.dart';
+import '../../presentation/providers/auth_provider.dart';
 import '../../presentation/screens/Home/home_screen.dart';
 import '../../presentation/screens/category/catalogs_screen.dart';
 import '../../presentation/screens/login/login_screen.dart';
@@ -9,13 +11,13 @@ import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/products/product_detail_screen.dart';
 import '../../presentation/screens/products/product_form_screen.dart';
 import '../../presentation/screens/products/products_screen.dart';
+import '../../presentation/screens/reports/reports_screen.dart';
 import '../../presentation/screens/shopping/purchases_screen.dart';
 import '../../presentation/screens/suppliers/suppliers_screen.dart';
 import '../../presentation/screens/Clientes/clients_screen.dart';
 import '../../presentation/screens/Ventas/sales_screen.dart';
 import '../../presentation/screens/user_management/user_management_screen.dart';
 import '../../presentation/screens/users/user_profile_screen.dart';
-import '../../presentation/screens/reportes/reportes_screen.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -31,7 +33,6 @@ class AppRoutes {
   static const String productDetail = '/product-detail';
   static const String productForm = '/product-form';
 
-  // Otros módulos del menú principal
   static const String sales = '/sales';
   static const String clients = '/clients';
   static const String purchases = '/purchases';
@@ -44,18 +45,17 @@ class AppRoutes {
     root: (context) => const LoginScreen(),
     login: (context) => const LoginScreen(),
     home: (context) {
-      final arguments = ModalRoute.of(context)?.settings.arguments;
-      final role = arguments is UserRole ? arguments : UserRole.administrador;
-      return HomeScreen(userName: role.demoName, role: role);
+      final session = context.read<AuthProvider>().session;
+      if (session == null) return const LoginScreen();
+      return HomeScreen(userName: session.nombre, role: session.role);
     },
     profile: (context) {
-      final arguments = ModalRoute.of(context)?.settings.arguments;
-      final role = arguments is UserRole ? arguments : UserRole.administrador;
-      return ProfileScreen(userName: role.demoName, role: role);
+      final session = context.read<AuthProvider>().session;
+      if (session == null) return const LoginScreen();
+      return ProfileScreen(userName: session.nombre, role: session.role);
     },
     userProfile: (context) => const UserProfileScreen(),
 
-    // Módulo de Productos (Pantallas reales)
     products: (context) => const ProductsScreen(showBack: true),
     productDetail: (context) {
       final arguments = ModalRoute.of(context)?.settings.arguments;
@@ -66,33 +66,26 @@ class AppRoutes {
       return ProductDetailScreen(product: product);
     },
     productForm: (context) {
-      // Sin argumentos = producto nuevo; con argumento = editar.
       final arguments = ModalRoute.of(context)?.settings.arguments;
       final product = arguments is ProductsModel ? arguments : null;
       return ProductFormScreen(product: product);
     },
 
-    // Módulo de Proveedores (Pantalla real)
     suppliers: (context) => const SuppliersScreen(showBack: true),
 
-    // Módulo de Catálogos: categorías y presentaciones (Pantalla real)
     catalogs: (context) => const CatalogsScreen(showBack: true),
 
-    // Módulo de Compras (Pantalla real)
     purchases: (context) => const PurchasesScreen(showBack: true),
 
-    // Módulos de Clientes y Ventas (Pantallas reales)
     clients: (context) => const ClientsScreen(showBack: true),
     sales: (context) {
-      final arguments = ModalRoute.of(context)?.settings.arguments;
-      final role = arguments is UserRole ? arguments : UserRole.administrador;
+      final role =
+          context.read<AuthProvider>().session?.role ?? UserRole.empleado;
       return SalesScreen(role: role, showBack: true);
     },
 
-    // Módulo de Gestión de usuarios (solo Administrador, ver home_module.dart)
     usersRoles: (context) => const UserManagementScreen(showBack: true),
 
-    // Módulo de Reportes
-    reports: (context) => const Reportesscreen(),
+    reports: (context) => const ReportsScreen(showBack: true),
   };
 }

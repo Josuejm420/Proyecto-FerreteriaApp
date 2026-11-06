@@ -44,8 +44,15 @@ class _HomeScreenState extends State<HomeScreen> {
               role: widget.role,
               onOpenTab: _onTabSelected,
             ),
-            SalesScreen(role: widget.role),
-            const ProductsScreen(),
+            SalesScreen(
+              role: widget.role,
+              showBack: _currentIndex == 1,
+              onBack: () => _onTabSelected(0),
+            ),
+            ProductsScreen(
+              showBack: _currentIndex == 2,
+              onBack: () => _onTabSelected(0),
+            ),
             ProfileScreen(userName: widget.userName, role: widget.role),
           ],
         ),

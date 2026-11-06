@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
-import '../../../data/models/user_role.dart';
-import '../../../services/auth_service.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/primary_button.dart';
 import 'login_validators.dart';
 import 'widgets/login_header.dart';
 import 'widgets/login_text_field.dart';
-import 'widgets/role_selector.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,14 +21,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: 'antonio@dontono.com');
-  final _passwordController = TextEditingController(text: '12345678');
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _passwordFocus = FocusNode();
-  final _authService = AuthService();
 
-  UserRole _selectedRole = UserRole.administrador;
   bool _obscurePassword = true;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -43,31 +39,23 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _obscurePassword = !_obscurePassword);
   }
 
-  void _onRoleChanged(UserRole role) {
-    setState(() => _selectedRole = role);
-  }
-
   Future<void> _onLogin() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
-    final authenticated = await _authService.login(
-      _emailController.text,
+    final auth = context.read<AuthProvider>();
+    final success = await auth.login(
+      _emailController.text.trim(),
       _passwordController.text,
     );
 
     if (!mounted) return;
-    setState(() => _isLoading = false);
 
-    if (authenticated) {
-      Navigator.pushReplacementNamed(
-        context,
-        AppRoutes.home,
-        arguments: _selectedRole,
-      );
+    if (success) {
+      // El rol y el nombre se leen de la sesión (AuthProvider) en las rutas.
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
     } else {
-      _showMessage('Correo o contraseña incorrectos');
+      _showMessage(auth.errorMessage ?? 'No se pudo iniciar sesión');
     }
   }
 
@@ -123,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         children: [
                           const LoginHeader(),
-                          const SizedBox(height: 28),
+                          const SizedBox(height: 20),
                           _buildFormCard(),
                         ],
                       ),
@@ -187,17 +175,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: _togglePasswordVisibility,
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Entrar como (demo)',
-              style: TextStyle(color: DarkColors.textoSuave, fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-            RoleSelector(selected: _selectedRole, onChanged: _onRoleChanged),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             PrimaryButton(
               text: 'Iniciar sesión',
-              isLoading: _isLoading,
+              isLoading: context.select<AuthProvider, bool>(
+                (provider) => provider.isLoading,
+              ),
               onPressed: _onLogin,
               backgroundColor: DarkColors.naranjaBoton,
               foregroundColor: const Color(0xFF1A1A1A),

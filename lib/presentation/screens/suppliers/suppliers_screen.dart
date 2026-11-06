@@ -16,7 +16,7 @@ import 'widgets/supplier_search_field.dart';
 class SuppliersScreen extends StatefulWidget {
   const SuppliersScreen({super.key, this.showBack = false});
 
-  /// true cuando se abre como pantalla aparte (con flecha para volver).
+  
   final bool showBack;
 
   @override
@@ -32,7 +32,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
   bool _isLoading = true;
   String? _errorMessage;
 
-  /// Solo el administrador puede crear o editar (la API rechaza a los demás).
+  
   bool get _canEdit =>
       context.read<AuthProvider>().session?.role == UserRole.administrador;
 
@@ -48,7 +48,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
     super.dispose();
   }
 
-  // --- Carga desde la API ---
+  
   Future<void> _load() async {
     try {
       final suppliers = await _repository.getAll();
@@ -69,7 +69,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
   void _onLoadError(String message) {
     if (!mounted) return;
     setState(() => _errorMessage = message);
-    // Si ya había proveedores en pantalla, solo se avisa con un mensaje.
+   
     if (_suppliers.isNotEmpty) _showMessage(message);
   }
 
@@ -81,7 +81,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
     _load();
   }
 
-  /// Proveedores que coinciden con el texto buscado (por nombre).
+  
   List<SupplierModel> get _filtered {
     final query = _query.trim().toLowerCase();
     if (query.isEmpty) return _suppliers;
@@ -90,7 +90,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
         .toList();
   }
 
-  // --- Eventos ---
+  
   void _onSearchChanged(String value) => setState(() => _query = value);
 
   Future<void> _openCreate() async {

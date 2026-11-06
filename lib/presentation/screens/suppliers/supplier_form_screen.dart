@@ -10,7 +10,7 @@ import '../../widgets/screen_title_bar.dart';
 import 'suppliers_validators.dart';
 import 'widgets/supplier_text_field.dart';
 
-/// Formulario para crear (supplier == null) o editar un proveedor.
+
 class SupplierFormScreen extends StatefulWidget {
   const SupplierFormScreen({super.key, this.supplier});
 
@@ -54,7 +54,7 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
     super.dispose();
   }
 
-  // --- Eventos ---
+  
   void _onActiveChanged(bool? value) => setState(() => _activo = value ?? true);
 
   void _showError(String text) {
@@ -88,7 +88,7 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
     try {
       final saved = await getIt<SuppliersRepository>().save(supplier);
       if (!mounted) return;
-      Navigator.pop(context, saved); // devuelve el proveedor guardado
+      Navigator.pop(context, saved); 
     } on ApiException catch (e) {
       if (!mounted) return;
       setState(() => _isSaving = false);

@@ -20,7 +20,7 @@ class UserListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // El color de la franja cambia según el rol.
+    
     final index = (role.id - 1) % DarkColors.acentosProducto.length;
     final accent = DarkColors.acentosProducto[index];
     final iconBackground = DarkColors.fondosIconoProducto[index];

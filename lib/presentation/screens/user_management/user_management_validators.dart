@@ -8,7 +8,7 @@ class UserManagementValidators {
     return null;
   }
 
-  /// La dirección es opcional.
+  
   static String? direccion(String? value) => null;
 
   static String? correo(String? value) {
@@ -20,7 +20,7 @@ class UserManagementValidators {
     return null;
   }
 
-  /// Al crear es obligatoria; al editar se puede dejar vacía (se mantiene).
+  
   static String? contrasena(String? value, {required bool isEditing}) {
     final text = value ?? '';
     if (text.isEmpty) {

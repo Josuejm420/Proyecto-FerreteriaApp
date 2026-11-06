@@ -4,7 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../data/models/role_model.dart';
 
-/// Muestra los menús (permisos) que tiene el rol seleccionado.
+
 class RolePermissionsCard extends StatelessWidget {
   const RolePermissionsCard({super.key, required this.role});
 

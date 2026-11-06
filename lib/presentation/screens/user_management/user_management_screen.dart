@@ -10,11 +10,11 @@ import '../products/widgets/category_filter.dart';
 import 'user_form_screen.dart';
 import 'widgets/user_list_card.dart';
 
-/// Gestión de usuarios. Solo se muestra en el menú del Administrador.
+
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key, this.showBack = false});
 
-  /// true cuando se abre como pantalla aparte (con flecha para volver).
+  
   final bool showBack;
 
   @override
@@ -43,7 +43,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
     super.dispose();
   }
 
-  /// Usuarios que coinciden con el texto (nombre o correo) y con el rol elegido.
+  
   List<UserModel> get _filtered {
     final query = _query.trim().toLowerCase();
     return _users.where((u) {
@@ -56,6 +56,8 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
     }).toList();
   }
 
+  
+  void _reload() => setState(() => _users = _repository.getAll());
   // --- Eventos ---
   Future<void> _loadUsers() async {
     try {

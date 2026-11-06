@@ -4,7 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../products/widgets/product_field_style.dart';
 
-/// Campo de contraseña oscuro con botón para mostrar u ocultar el texto.
+
 class UserPasswordField extends StatefulWidget {
   const UserPasswordField({
     super.key,

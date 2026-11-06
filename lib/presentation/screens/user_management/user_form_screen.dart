@@ -13,7 +13,7 @@ import 'user_management_validators.dart';
 import 'widgets/role_permissions_card.dart';
 import 'widgets/user_password_field.dart';
 
-/// Formulario para crear (user == null) o editar un usuario.
+
 class UserFormScreen extends StatefulWidget {
   const UserFormScreen({super.key, this.user});
 
@@ -70,7 +70,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
     return exists ? 'Este correo ya está registrado' : null;
   }
 
-  // --- Eventos ---
+ 
   void _onRoleChanged(int? value) => setState(() => _idRol = value);
 
   void _onActiveChanged(bool? value) => setState(() => _activo = value ?? true);
@@ -82,7 +82,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
     setState(() => _isSaving = true);
 
-    // Al editar, si no escribe contraseña nueva se conserva la anterior.
+    
     final newPassword = _contrasenaController.text;
     final user = UserModel(
       id: widget.user?.id,
@@ -101,7 +101,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
 
     if (!mounted) return;
     setState(() => _isSaving = false);
-    Navigator.pop(context, saved); // devuelve el usuario guardado
+    Navigator.pop(context, saved); 
   }
 
   @override

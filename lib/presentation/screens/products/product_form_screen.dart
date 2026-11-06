@@ -13,7 +13,7 @@ import 'products_validators.dart';
 import 'widgets/product_dropdown.dart';
 import 'widgets/product_text_field.dart';
 
-/// Formulario para crear (product == null) o editar un producto.
+
 class ProductFormScreen extends StatefulWidget {
   const ProductFormScreen({super.key, this.product});
 
@@ -59,14 +59,14 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     super.dispose();
   }
 
-  // --- Carga de categorías y presentaciones ---
+  
   Future<void> _loadCatalogs() async {
     try {
       final catalogs = await getIt<ProductsRepository>().loadCatalogs();
       if (!mounted) return;
 
       final product = widget.product;
-      // Solo se ofrecen las activas, más la que ya tenga el producto.
+      
       final categories = catalogs.categories
           .where((c) => c.activo || c.id == product?.categoriaId)
           .toList();
@@ -77,7 +77,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       setState(() {
         _categories = categories;
         _presentations = presentations;
-        // El selector necesita la misma instancia que está en la lista.
+        
         _categoria =
             categories.where((c) => c.id == product?.categoriaId).firstOrNull;
         _presentacion = presentations
@@ -104,7 +104,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     _loadCatalogs();
   }
 
-  // --- Eventos ---
+ 
   void _onCategoryChanged(CategoryModel? value) =>
       setState(() => _categoria = value);
 
@@ -281,7 +281,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 }
 
-/// Tarjeta con un mensaje (y un botón opcional) para errores o avisos.
+
 class _InfoCard extends StatelessWidget {
   const _InfoCard({required this.message, this.actionLabel, this.onAction});
 

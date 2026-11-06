@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
-/// Chips horizontales: "Todos" + una por categoría.
+
 class CategoryFilter extends StatelessWidget {
   const CategoryFilter({
     super.key,

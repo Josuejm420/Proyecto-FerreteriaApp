@@ -18,7 +18,7 @@ import 'widgets/product_search_field.dart';
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key, this.showBack = false, this.onBack});
 
-  /// true cuando se abre como pantalla aparte (con flecha para volver).
+  
   final bool showBack;
   final VoidCallback? onBack;
 
@@ -36,7 +36,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   bool _isLoading = true;
   String? _errorMessage;
 
-  /// Solo el administrador puede crear (la API rechaza a los demás).
+  
   bool get _canEdit =>
       context.read<AuthProvider>().session?.role == UserRole.administrador;
 
@@ -52,7 +52,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     super.dispose();
   }
 
-  // --- Carga desde la API ---
+  
   Future<void> _load() async {
     try {
       final products = await _repository.getAll();
@@ -60,7 +60,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       setState(() {
         _products = products;
         _errorMessage = null;
-        // Si la categoría elegida ya no tiene productos, se vuelve a "Todos".
+        
         if (_selectedCategory != null &&
             !products.any((p) => p.categoria == _selectedCategory)) {
           _selectedCategory = null;
@@ -78,7 +78,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   void _onLoadError(String message) {
     if (!mounted) return;
     setState(() => _errorMessage = message);
-    // Si ya había productos en pantalla, solo se avisa con un mensaje.
+    
     if (_products.isNotEmpty) _showMessage(message);
   }
 
@@ -90,7 +90,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     _load();
   }
 
-  // --- Datos filtrados ---
+ 
   List<String> get _categoryNames {
     final names = _products.map((p) => p.categoria).toSet().toList();
     names.sort();
@@ -108,7 +108,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }).toList();
   }
 
-  // --- Eventos ---
   void _onSearchChanged(String value) => setState(() => _query = value);
 
   void _onCategorySelected(String? category) {
@@ -121,7 +120,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       AppRoutes.productDetail,
       arguments: product,
     );
-    if (mounted) _load(); // el detalle pudo editar o desactivar
+    if (mounted) _load(); 
   }
 
   Future<void> _openCreate() async {
